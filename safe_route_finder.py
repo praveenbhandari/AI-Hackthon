@@ -229,31 +229,97 @@ class SafeRouteFinder:
     
     def _generate_waypoints(self, start_lat: float, start_lng: float, 
                            end_lat: float, end_lng: float, max_distance: float) -> List[Tuple[float, float]]:
-        """Generate waypoints along the route"""
+        """Generate waypoints along the route following realistic street patterns"""
         waypoints = []
         
-        # Add start and end points
+        # Add start point
         waypoints.append((start_lat, start_lng))
-        waypoints.append((end_lat, end_lng))
         
-        # Generate intermediate waypoints
-        num_intermediate = int(max_distance / 200)  # Waypoint every 200m
-        for i in range(1, num_intermediate):
-            # Linear interpolation
-            lat = start_lat + (end_lat - start_lat) * i / num_intermediate
-            lng = start_lng + (end_lng - start_lng) * i / num_intermediate
+        # Calculate direct distance and determine number of major waypoints
+        direct_distance = self.calculate_distance(start_lat, start_lng, end_lat, end_lng)
+        
+        # For longer routes, create more waypoints to simulate street turns
+        if direct_distance > 2000:  # Routes longer than 2km
+            num_waypoints = 6
+        elif direct_distance > 1000:  # Routes longer than 1km
+            num_waypoints = 4
+        else:
+            num_waypoints = 3
+        
+        # Calculate the bearing from start to end
+        bearing = self._calculate_bearing(start_lat, start_lng, end_lat, end_lng)
+        
+        # Create intermediate waypoints with realistic street patterns
+        for i in range(1, num_waypoints):
+            # Calculate progress along the route
+            progress = i / num_waypoints
             
-            # Add some randomness to explore safer areas
-            lat += np.random.normal(0, 0.001)  # ±100m variation
-            lng += np.random.normal(0, 0.001)
+            # Base position along the direct route
+            base_lat = start_lat + (end_lat - start_lat) * progress
+            base_lng = start_lng + (end_lng - start_lng) * progress
             
-            waypoints.append((lat, lng))
+            # Add realistic street routing variations
+            # Simulate following streets by creating perpendicular turns
+            
+            # Determine turn direction based on progress and bearing
+            if i % 2 == 0:
+                # Create a "right turn" - perpendicular to the main direction
+                turn_angle = bearing + 90  # Right turn
+            else:
+                # Create a "left turn" - perpendicular to the main direction
+                turn_angle = bearing - 90  # Left turn
+            
+            # Calculate turn distance (how far to go perpendicular)
+            turn_distance = 0.002  # ~200 meters perpendicular movement
+            
+            # Calculate the turn offset
+            turn_lat_offset = turn_distance * math.cos(math.radians(turn_angle))
+            turn_lng_offset = turn_distance * math.sin(math.radians(turn_angle))
+            
+            # Apply the turn
+            waypoint_lat = base_lat + turn_lat_offset
+            waypoint_lng = base_lng + turn_lng_offset
+            
+            # Add some randomness to make it more realistic
+            random_offset = 0.0003  # ~30 meters random variation
+            waypoint_lat += np.random.normal(0, random_offset)
+            waypoint_lng += np.random.normal(0, random_offset)
+            
+            # Check safety and try to find safer nearby location if needed
+            safety_score = self.get_safety_score(waypoint_lat, waypoint_lng)
+            
+            if safety_score < 40:
+                # Try to find a safer location nearby
+                for attempt in range(8):
+                    # Try different directions around the waypoint
+                    angle = attempt * 45  # 45 degrees = 360/8
+                    radius = 0.001  # ~100 meters
+                    
+                    new_lat = waypoint_lat + radius * math.cos(math.radians(angle))
+                    new_lng = waypoint_lng + radius * math.sin(math.radians(angle))
+                    
+                    new_safety = self.get_safety_score(new_lat, new_lng)
+                    if new_safety > safety_score + 10:  # Only move if significantly safer
+                        waypoint_lat, waypoint_lng = new_lat, new_lng
+                        safety_score = new_safety
+                        break
+            
+            waypoints.append((waypoint_lat, waypoint_lng))
+        
+        # Add end point
+        waypoints.append((end_lat, end_lng))
         
         return waypoints
     
     def _find_optimal_path(self, waypoints: List[Tuple[float, float]], safety_weight: float) -> List[RoutePoint]:
-        """Find optimal path through waypoints using dynamic programming"""
+        """Find optimal path through waypoints using dynamic programming with realistic routing"""
         n = len(waypoints)
+        
+        # If we have very few waypoints, add intermediate ones for more realistic routing
+        if n < 4:
+            enhanced_waypoints = self._add_intermediate_waypoints(waypoints)
+            n = len(enhanced_waypoints)
+            waypoints = enhanced_waypoints
         
         # Calculate distances and safety scores between all waypoints
         distances = np.zeros((n, n))
@@ -309,6 +375,47 @@ class SafeRouteFinder:
         
         return route_points
     
+    def _add_intermediate_waypoints(self, waypoints: List[Tuple[float, float]]) -> List[Tuple[float, float]]:
+        """Add intermediate waypoints to create more realistic routes"""
+        enhanced_waypoints = []
+        
+        for i in range(len(waypoints) - 1):
+            start_lat, start_lng = waypoints[i]
+            end_lat, end_lng = waypoints[i + 1]
+            
+            # Add the current waypoint
+            enhanced_waypoints.append((start_lat, start_lng))
+            
+            # Calculate distance between these waypoints
+            distance = self.calculate_distance(start_lat, start_lng, end_lat, end_lng)
+            
+            # If distance is large, add intermediate points
+            if distance > 500:  # Add intermediate points for segments longer than 500m
+                num_intermediate = int(distance / 300)  # One intermediate point every 300m
+                
+                for j in range(1, num_intermediate):
+                    progress = j / (num_intermediate + 1)
+                    
+                    # Linear interpolation
+                    inter_lat = start_lat + (end_lat - start_lat) * progress
+                    inter_lng = start_lng + (end_lng - start_lng) * progress
+                    
+                    # Add slight curve to make it more realistic
+                    curve_offset = 0.0002  # ~20 meters curve
+                    if j % 2 == 0:
+                        # Curve to one side
+                        inter_lat += curve_offset
+                    else:
+                        # Curve to the other side
+                        inter_lat -= curve_offset
+                    
+                    enhanced_waypoints.append((inter_lat, inter_lng))
+        
+        # Add the final waypoint
+        enhanced_waypoints.append(waypoints[-1])
+        
+        return enhanced_waypoints
+    
     def _dijkstra(self, costs: np.ndarray, start: int, end: int) -> List[int]:
         """Dijkstra's algorithm to find shortest path"""
         n = len(costs)
@@ -362,7 +469,7 @@ class SafeRouteFinder:
         # Create map
         m = folium.Map(location=[center_lat, center_lng], zoom_start=14)
         
-        # Add route line
+        # Add route waypoints and segments
         route_coords = [(point.lat, point.lng) for point in route]
         
         # Color the route based on safety scores
@@ -377,26 +484,74 @@ class SafeRouteFinder:
             else:
                 colors.append('red')
         
-        # Draw route segments with different colors
+        # Draw route as connected waypoints (Google Maps style)
         for i in range(len(route_coords) - 1):
+            # Create route segment with safety information
+            segment_coords = [route_coords[i], route_coords[i + 1]]
+            
+            # Calculate segment distance
+            segment_distance = self.calculate_distance(
+                route_coords[i][0], route_coords[i][1],
+                route_coords[i + 1][0], route_coords[i + 1][1]
+            )
+            
+            # Create popup with safety and distance info
+            popup_text = f"""
+            <div style="width: 200px;">
+                <h6>Route Segment {i+1}</h6>
+                <p><strong>Safety Score:</strong> {route[i].safety_score:.1f}</p>
+                <p><strong>Incidents Nearby:</strong> {route[i].incident_count}</p>
+                <p><strong>Distance:</strong> {segment_distance:.0f}m</p>
+                <p><strong>Total Distance:</strong> {route[i+1].total_distance:.0f}m</p>
+            </div>
+            """
+            
+            # Draw the route segment
             folium.PolyLine(
-                locations=[route_coords[i], route_coords[i + 1]],
+                locations=segment_coords,
                 color=colors[i],
-                weight=4,
+                weight=6,
                 opacity=0.8,
-                popup=f"Safety: {route[i].safety_score:.1f}, Incidents: {route[i].incident_count}"
+                popup=folium.Popup(popup_text, max_width=250)
             ).add_to(m)
+            
+            # Add waypoint markers (except start and end)
+            if i > 0:  # Don't add marker for start point
+                folium.CircleMarker(
+                    location=route_coords[i],
+                    radius=8,
+                    color=colors[i],
+                    fill=True,
+                    fillColor=colors[i],
+                    fillOpacity=0.7,
+                    popup=f"Waypoint {i}<br>Safety: {route[i].safety_score:.1f}<br>Incidents: {route[i].incident_count}"
+                ).add_to(m)
         
-        # Add start and end markers
+        # Add start marker
         folium.Marker(
             [route[0].lat, route[0].lng],
-            popup=f"{start_name}<br>Safety: {route[0].safety_score:.1f}",
+            popup=f"""
+            <div style="width: 200px;">
+                <h6>{start_name}</h6>
+                <p><strong>Safety Score:</strong> {route[0].safety_score:.1f}</p>
+                <p><strong>Incidents Nearby:</strong> {route[0].incident_count}</p>
+                <p><strong>Distance from start:</strong> 0m</p>
+            </div>
+            """,
             icon=folium.Icon(color='green', icon='info-sign')
         ).add_to(m)
         
+        # Add end marker
         folium.Marker(
             [route[-1].lat, route[-1].lng],
-            popup=f"{end_name}<br>Safety: {route[-1].safety_score:.1f}",
+            popup=f"""
+            <div style="width: 200px;">
+                <h6>{end_name}</h6>
+                <p><strong>Safety Score:</strong> {route[-1].safety_score:.1f}</p>
+                <p><strong>Incidents Nearby:</strong> {route[-1].incident_count}</p>
+                <p><strong>Total Distance:</strong> {route[-1].total_distance:.0f}m</p>
+            </div>
+            """,
             icon=folium.Icon(color='red', icon='info-sign')
         ).add_to(m)
         
@@ -411,27 +566,115 @@ class SafeRouteFinder:
         
         return m
     
+    def get_turn_by_turn_directions(self, route: List[RoutePoint]) -> List[Dict]:
+        """Generate turn-by-turn directions for the route"""
+        if len(route) < 2:
+            return []
+        
+        directions = []
+        
+        for i in range(len(route) - 1):
+            current = route[i]
+            next_point = route[i + 1]
+            
+            # Calculate bearing (direction)
+            bearing = self._calculate_bearing(
+                current.lat, current.lng,
+                next_point.lat, next_point.lng
+            )
+            
+            # Calculate distance
+            distance = self.calculate_distance(
+                current.lat, current.lng,
+                next_point.lat, next_point.lng
+            )
+            
+            # Determine direction text
+            direction_text = self._get_direction_text(bearing)
+            
+            # Create direction step
+            step = {
+                'step_number': int(i + 1),
+                'direction': str(direction_text),
+                'distance_meters': float(distance),
+                'distance_text': str(self._format_distance(distance)),
+                'bearing': float(bearing),
+                'start_lat': float(current.lat),
+                'start_lng': float(current.lng),
+                'end_lat': float(next_point.lat),
+                'end_lng': float(next_point.lng),
+                'safety_score': float(current.safety_score),
+                'incident_count': int(current.incident_count),
+                'total_distance_so_far': float(next_point.total_distance)
+            }
+            
+            directions.append(step)
+        
+        return directions
+    
+    def _calculate_bearing(self, lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+        """Calculate bearing between two points"""
+        lat1_rad = math.radians(lat1)
+        lat2_rad = math.radians(lat2)
+        delta_lng = math.radians(lng2 - lng1)
+        
+        y = math.sin(delta_lng) * math.cos(lat2_rad)
+        x = math.cos(lat1_rad) * math.sin(lat2_rad) - math.sin(lat1_rad) * math.cos(lat2_rad) * math.cos(delta_lng)
+        
+        bearing = math.degrees(math.atan2(y, x))
+        return (bearing + 360) % 360
+    
+    def _get_direction_text(self, bearing: float) -> str:
+        """Convert bearing to direction text"""
+        if 337.5 <= bearing or bearing < 22.5:
+            return "Head North"
+        elif 22.5 <= bearing < 67.5:
+            return "Head Northeast"
+        elif 67.5 <= bearing < 112.5:
+            return "Head East"
+        elif 112.5 <= bearing < 157.5:
+            return "Head Southeast"
+        elif 157.5 <= bearing < 202.5:
+            return "Head South"
+        elif 202.5 <= bearing < 247.5:
+            return "Head Southwest"
+        elif 247.5 <= bearing < 292.5:
+            return "Head West"
+        else:
+            return "Head Northwest"
+    
+    def _format_distance(self, distance_meters: float) -> str:
+        """Format distance in human-readable format"""
+        if distance_meters < 1000:
+            return f"{int(distance_meters)} meters"
+        else:
+            return f"{distance_meters/1000:.1f} km"
+    
     def get_route_summary(self, route: List[RoutePoint]) -> Dict:
         """Get a summary of the route safety statistics"""
         if not route:
             return {}
         
-        safety_scores = [point.safety_score for point in route]
-        incident_counts = [point.incident_count for point in route]
+        safety_scores = [float(point.safety_score) for point in route]
+        incident_counts = [int(point.incident_count) for point in route]
+        
+        # Get turn-by-turn directions
+        directions = self.get_turn_by_turn_directions(route)
         
         return {
-            'total_distance_meters': route[-1].total_distance,
-            'num_waypoints': len(route),
-            'avg_safety_score': np.mean(safety_scores),
-            'min_safety_score': np.min(safety_scores),
-            'max_safety_score': np.max(safety_scores),
-            'total_incidents_along_route': sum(incident_counts),
-            'safety_grade': self._get_safety_grade(np.mean(safety_scores)),
+            'total_distance_meters': float(route[-1].total_distance),
+            'num_waypoints': int(len(route)),
+            'avg_safety_score': float(np.mean(safety_scores)),
+            'min_safety_score': float(np.min(safety_scores)),
+            'max_safety_score': float(np.max(safety_scores)),
+            'total_incidents_along_route': int(sum(incident_counts)),
+            'safety_grade': str(self._get_safety_grade(np.mean(safety_scores))),
             'route_analysis': {
-                'high_safety_segments': len([s for s in safety_scores if s >= 80]),
-                'medium_safety_segments': len([s for s in safety_scores if 60 <= s < 80]),
-                'low_safety_segments': len([s for s in safety_scores if s < 60])
-            }
+                'high_safety_segments': int(len([s for s in safety_scores if s >= 80])),
+                'medium_safety_segments': int(len([s for s in safety_scores if 60 <= s < 80])),
+                'low_safety_segments': int(len([s for s in safety_scores if s < 60]))
+            },
+            'turn_by_turn_directions': directions
         }
     
     def _get_safety_grade(self, avg_safety: float) -> str:

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Route Finder - San Francisco</title>
+    <title>Enhanced Safe Route Finder</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -17,12 +17,13 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
             margin: 20px auto;
             max-width: 1400px;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             border-radius: 20px 20px 0 0;
@@ -37,8 +38,8 @@
         
         .header p {
             margin: 10px 0 0 0;
-            opacity: 0.9;
             font-size: 1.1rem;
+            opacity: 0.9;
         }
         
         .content {
@@ -49,11 +50,12 @@
             background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
         }
         
         .form-section h3 {
-            color: #2c3e50;
+            color: #495057;
             margin-bottom: 20px;
             font-weight: 600;
         }
@@ -62,6 +64,7 @@
             border-radius: 10px;
             border: 2px solid #e9ecef;
             padding: 12px 15px;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
         
@@ -84,312 +87,343 @@
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
         
+        .safety-slider {
+            margin: 20px 0;
+        }
+        
+        .safety-slider label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .safety-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
         .results-section {
             background: white;
             border-radius: 15px;
             padding: 25px;
-            margin-top: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
-        .safety-score {
-            font-size: 2rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-        }
-        
-        .safety-excellent { background: #d4edda; color: #155724; }
-        .safety-good { background: #fff3cd; color: #856404; }
-        .safety-fair { background: #f8d7da; color: #721c24; }
-        .safety-poor { background: #f5c6cb; color: #721c24; }
-        
-        .stats-card {
+        .route-info {
             background: #f8f9fa;
             border-radius: 10px;
             padding: 20px;
-            margin: 10px 0;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .route-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
         }
         
-        .stats-card h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
         }
         
-        .recommendation {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        .map-container {
-            height: 500px;
-            border-radius: 15px;
+        .safety-grade {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .grade-a { background: #d4edda; color: #155724; }
+        .grade-b { background: #d1ecf1; color: #0c5460; }
+        .grade-c { background: #fff3cd; color: #856404; }
+        .grade-d { background: #f8d7da; color: #721c24; }
+        .grade-f { background: #f5c6cb; color: #721c24; }
+        
+        .route-comparison {
+            margin-top: 25px;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table {
+            margin: 0;
+        }
+        
+        .table th {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .recommendations {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
             margin-top: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .recommendations h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .recommendations ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .recommendations li {
+            margin-bottom: 8px;
+            color: #424242;
         }
         
         .loading {
-            display: none;
             text-align: center;
             padding: 40px;
+            color: #6c757d;
         }
         
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .error-message {
             background: #f8d7da;
             color: #721c24;
-            padding: 15px;
+            border: 1px solid #f5c6cb;
             border-radius: 10px;
-            margin: 10px 0;
-            display: none;
-        }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
             padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            display: none;
+            margin: 20px 0;
         }
         
-        .coordinate-input {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .map-container {
+            margin-top: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .coordinate-input input {
-            flex: 1;
+        .map-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
         }
         
-        .preset-locations {
-            margin-top: 20px;
+        .route-type-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
         
-        .preset-btn {
-            margin: 5px;
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
+        .route-type-direct { background: #e3f2fd; color: #1976d2; }
+        .route-type-safest { background: #e8f5e8; color: #2e7d32; }
+        .route-type-balanced { background: #fff3e0; color: #f57c00; }
+        .route-type-perimeter { background: #f3e5f5; color: #7b1fa2; }
+        .route-type-multipath { background: #e0f2f1; color: #00695c; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="main-container">
             <div class="header">
-                <h1><i class="fas fa-shield-alt"></i> Safe Route Finder</h1>
-                <p>Find the safest walking route in San Francisco using real police incident data</p>
+                <h1><i class="fas fa-shield-alt"></i> Enhanced Safe Route Finder</h1>
+                <p>Find the safest walking route using San Francisco police incident data</p>
             </div>
             
             <div class="content">
+                <!-- Input Form -->
                 <div class="form-section">
                     <h3><i class="fas fa-map-marker-alt"></i> Route Information</h3>
-                    
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Starting Point</h5>
-                            <div class="coordinate-input">
-                                <input type="number" class="form-control" id="start_lat" placeholder="Latitude" step="0.0001" value="37.7694">
-                                <input type="number" class="form-control" id="start_lng" placeholder="Longitude" step="0.0001" value="-122.4862">
+                            <div class="mb-3">
+                                <label for="startLat" class="form-label">Start Latitude</label>
+                                <input type="number" class="form-control" id="startLat" step="any" value="37.7694" placeholder="e.g., 37.7694">
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <h5>Destination</h5>
-                            <div class="coordinate-input">
-                                <input type="number" class="form-control" id="end_lat" placeholder="Latitude" step="0.0001" value="37.8087">
-                                <input type="number" class="form-control" id="end_lng" placeholder="Longitude" step="0.0001" value="-122.4098">
+                            <div class="mb-3">
+                                <label for="startLng" class="form-label">Start Longitude</label>
+                                <input type="number" class="form-control" id="startLng" step="any" value="-122.4862" placeholder="e.g., -122.4862">
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="preset-locations">
-                        <h6>Quick Presets:</h6>
-                        <button class="btn btn-outline-primary preset-btn" onclick="setPreset('golden_gate_park', 'fishermans_wharf')">
-                            Golden Gate Park → Fisherman's Wharf
-                        </button>
-                        <button class="btn btn-outline-primary preset-btn" onclick="setPreset('mission_district', 'downtown')">
-                            Mission District → Downtown
-                        </button>
-                        <button class="btn btn-outline-primary preset-btn" onclick="setPreset('haight_ashbury', 'castro')">
-                            Haight-Ashbury → Castro
-                        </button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="endLat" class="form-label">End Latitude</label>
+                                <input type="number" class="form-control" id="endLat" step="any" value="37.8087" placeholder="e.g., 37.8087">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="endLng" class="form-label">End Longitude</label>
+                                <input type="number" class="form-control" id="endLng" step="any" value="-122.4098" placeholder="e.g., -122.4098">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
+                <!-- Safety Preferences -->
                 <div class="form-section">
-                    <h3><i class="fas fa-cog"></i> Route Preferences</h3>
-                    
+                    <h3><i class="fas fa-sliders-h"></i> Safety Preferences</h3>
+                    <div class="safety-slider">
+                        <label for="safetyWeight">Safety Priority: <span id="safetyValue">70%</span></label>
+                        <input type="range" class="form-range" id="safetyWeight" min="0" max="100" value="70">
+                        <div class="safety-value">
+                            <span id="safetyDescription">Balanced Safety & Distance</span>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="safety_weight" class="form-label">Safety Priority (0-1)</label>
-                            <input type="range" class="form-range" id="safety_weight" min="0" max="1" step="0.1" value="0.7">
-                            <div class="text-center">
-                                <span id="safety_weight_value">0.7</span>
-                                <small class="text-muted">(Higher = safer route, longer distance)</small>
+                            <div class="mb-3">
+                                <label for="maxDistanceFactor" class="form-label">Maximum Route Length (x direct distance)</label>
+                                <select class="form-select" id="maxDistanceFactor">
+                                    <option value="1.5">1.5x (Conservative)</option>
+                                    <option value="2.0" selected>2.0x (Balanced)</option>
+                                    <option value="3.0">3.0x (Maximum Safety)</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="max_distance_factor" class="form-label">Maximum Route Length</label>
-                            <input type="range" class="form-range" id="max_distance_factor" min="1.2" max="2.0" step="0.1" value="1.5">
-                            <div class="text-center">
-                                <span id="max_distance_factor_value">1.5x</span>
-                                <small class="text-muted">(Factor of direct distance)</small>
+                            <div class="mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="button" class="btn btn-primary w-100" onclick="findRoute()">
+                                    <i class="fas fa-search"></i> Find Optimal Route
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="resultsSection" class="results-section" style="display: none;">
+                    <h3><i class="fas fa-route"></i> Route Results</h3>
                     
+                    <!-- Best Route Info -->
+                    <div id="bestRouteInfo" class="route-info">
+                        <h4><i class="fas fa-star"></i> Recommended Route</h4>
+                        <div id="bestRouteDetails"></div>
+                    </div>
+                    
+                    <!-- Route Metrics -->
+                    <div id="routeMetrics" class="route-metrics"></div>
+                    
+                    <!-- Route Comparison Table -->
+                    <div class="route-comparison">
+                        <h4><i class="fas fa-chart-bar"></i> All Route Options</h4>
+                        <div id="routeComparisonTable" class="comparison-table"></div>
+                    </div>
+                    
+                    <!-- Safety Recommendations -->
+                    <div id="recommendations" class="recommendations"></div>
+                    
+                    <!-- Map Visualization -->
                     <div class="text-center mt-4">
-                        <button class="btn btn-primary btn-lg" onclick="findRoute()">
-                            <i class="fas fa-search"></i> Find Safe Route
+                        <button type="button" class="btn btn-primary" onclick="createMap()">
+                            <i class="fas fa-map"></i> View Route Comparison Map
                         </button>
                     </div>
+                    <div id="mapContainer" class="map-container" style="display: none;"></div>
                 </div>
                 
-                <div class="loading" id="loading">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3">Analyzing route safety...</p>
+                <!-- Loading Section -->
+                <div id="loadingSection" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <h4>Finding the safest route...</h4>
+                    <p>Analyzing multiple route options based on your safety preferences</p>
                 </div>
                 
-                <div class="error-message" id="error_message"></div>
-                <div class="success-message" id="success_message"></div>
-                
-                <div class="results-section" id="results" style="display: none;">
-                    <h3><i class="fas fa-chart-line"></i> Route Analysis</h3>
-                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="stats-card">
-                                <h4>Safety Grade</h4>
-                                <div id="safety_grade" class="safety-score"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stats-card">
-                                <h4>Total Distance</h4>
-                                <h3 id="total_distance">-</h3>
-                                <small class="text-muted">meters</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stats-card">
-                                <h4>Incidents Along Route</h4>
-                                <h3 id="total_incidents">-</h3>
-                                <small class="text-muted">recent incidents</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h5>Safety Statistics</h5>
-                            <div class="stats-card">
-                                <p><strong>Average Safety Score:</strong> <span id="avg_safety">-</span></p>
-                                <p><strong>Minimum Safety Score:</strong> <span id="min_safety">-</span></p>
-                                <p><strong>Maximum Safety Score:</strong> <span id="max_safety">-</span></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Route Segments</h5>
-                            <div class="stats-card">
-                                <p><strong>High Safety:</strong> <span id="high_safety_segments">-</span> segments</p>
-                                <p><strong>Medium Safety:</strong> <span id="medium_safety_segments">-</span> segments</p>
-                                <p><strong>Low Safety:</strong> <span id="low_safety_segments">-</span> segments</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h5>Safety Recommendations</h5>
-                        <div id="recommendations"></div>
-                    </div>
-                    
-                    <div class="text-center mt-4">
-                        <button class="btn btn-success" onclick="createMap()">
-                            <i class="fas fa-map"></i> View Interactive Map
-                        </button>
-                    </div>
-                    
-                    <div class="map-container" id="map_container" style="display: none;">
-                        <iframe id="map_frame" width="100%" height="100%" frameborder="0"></iframe>
-                    </div>
-                </div>
+                <!-- Error Section -->
+                <div id="errorSection" class="error-message" style="display: none;"></div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Update range input displays
-        document.getElementById('safety_weight').addEventListener('input', function() {
-            document.getElementById('safety_weight_value').textContent = this.value;
-        });
-        
-        document.getElementById('max_distance_factor').addEventListener('input', function() {
-            document.getElementById('max_distance_factor_value').textContent = this.value + 'x';
-        });
-        
-        // Preset locations
-        const presets = {
-            'golden_gate_park': { lat: 37.7694, lng: -122.4862 },
-            'fishermans_wharf': { lat: 37.8087, lng: -122.4098 },
-            'mission_district': { lat: 37.7599, lng: -122.4148 },
-            'downtown': { lat: 37.7749, lng: -122.4194 },
-            'haight_ashbury': { lat: 37.7694, lng: -122.4467 },
-            'castro': { lat: 37.7614, lng: -122.4350 }
-        };
-        
-        function setPreset(start, end) {
-            document.getElementById('start_lat').value = presets[start].lat;
-            document.getElementById('start_lng').value = presets[start].lng;
-            document.getElementById('end_lat').value = presets[end].lat;
-            document.getElementById('end_lng').value = presets[end].lng;
-        }
-        
-        function showLoading() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('error_message').style.display = 'none';
-            document.getElementById('success_message').style.display = 'none';
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-        }
-        
-        function showError(message) {
-            document.getElementById('error_message').textContent = message;
-            document.getElementById('error_message').style.display = 'block';
-        }
-        
-        function showSuccess(message) {
-            document.getElementById('success_message').textContent = message;
-            document.getElementById('success_message').style.display = 'block';
-        }
-        
-        function findRoute() {
-            const startLat = parseFloat(document.getElementById('start_lat').value);
-            const startLng = parseFloat(document.getElementById('start_lng').value);
-            const endLat = parseFloat(document.getElementById('end_lat').value);
-            const endLng = parseFloat(document.getElementById('end_lng').value);
-            const safetyWeight = parseFloat(document.getElementById('safety_weight').value);
-            const maxDistanceFactor = parseFloat(document.getElementById('max_distance_factor').value);
+        // Safety slider functionality
+        document.getElementById('safetyWeight').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('safetyValue').textContent = value + '%';
             
-            if (isNaN(startLat) || isNaN(startLng) || isNaN(endLat) || isNaN(endLng)) {
-                showError('Please enter valid coordinates for both start and end points.');
+            let description = '';
+            if (value < 30) description = 'Speed Priority';
+            else if (value < 50) description = 'Balanced Speed & Safety';
+            else if (value < 70) description = 'Balanced Safety & Distance';
+            else if (value < 90) description = 'Safety Priority';
+            else description = 'Maximum Safety';
+            
+            document.getElementById('safetyDescription').textContent = description;
+        });
+
+        function findRoute() {
+            const startLat = parseFloat(document.getElementById('startLat').value);
+            const startLng = parseFloat(document.getElementById('startLng').value);
+            const endLat = parseFloat(document.getElementById('endLat').value);
+            const endLng = parseFloat(document.getElementById('endLng').value);
+            const safetyWeight = parseFloat(document.getElementById('safetyWeight').value) / 100;
+            const maxDistanceFactor = parseFloat(document.getElementById('maxDistanceFactor').value);
+            
+            if (!startLat || !startLng || !endLat || !endLng) {
+                showError('Please enter valid coordinates for both start and end locations.');
                 return;
             }
             
@@ -412,10 +446,8 @@
             .then(response => response.json())
             .then(data => {
                 hideLoading();
-                
                 if (data.success) {
                     displayResults(data);
-                    showSuccess('Route found successfully!');
                 } else {
                     showError(data.error || 'Failed to find route');
                 }
@@ -425,81 +457,129 @@
                 showError('Network error: ' + error.message);
             });
         }
-        
+
         function displayResults(data) {
-            const summary = data.summary;
+            const bestRoute = data.best_route;
             
-            // Update safety grade
-            const safetyGrade = document.getElementById('safety_grade');
-            safetyGrade.textContent = summary.safety_grade;
-            safetyGrade.className = 'safety-score';
+            // Display best route info
+            document.getElementById('bestRouteDetails').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Route Type:</strong> 
+                            <span class="route-type-badge route-type-${bestRoute.route_type}">${bestRoute.route_type.toUpperCase()}</span>
+                        </p>
+                        <p><strong>Total Distance:</strong> ${Math.round(bestRoute.total_distance)} meters</p>
+                        <p><strong>Safety Grade:</strong> 
+                            <span class="safety-grade grade-${bestRoute.safety_grade.toLowerCase()}">${bestRoute.safety_grade}</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Average Safety Score:</strong> ${bestRoute.avg_safety_score.toFixed(1)}/100</p>
+                        <p><strong>Total Incidents:</strong> ${bestRoute.total_incidents}</p>
+                        <p><strong>Waypoints:</strong> ${bestRoute.waypoints.length}</p>
+                    </div>
+                </div>
+            `;
             
-            if (summary.safety_grade === 'A' || summary.safety_grade === 'A+') {
-                safetyGrade.classList.add('safety-excellent');
-            } else if (summary.safety_grade === 'B') {
-                safetyGrade.classList.add('safety-good');
-            } else if (summary.safety_grade === 'C') {
-                safetyGrade.classList.add('safety-fair');
-            } else {
-                safetyGrade.classList.add('safety-poor');
+            // Display route metrics
+            const metricsHtml = `
+                <div class="metric-card">
+                    <div class="metric-value">${Math.round(bestRoute.total_distance)}</div>
+                    <div class="metric-label">Distance (m)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${bestRoute.avg_safety_score.toFixed(1)}</div>
+                    <div class="metric-label">Safety Score</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${bestRoute.total_incidents}</div>
+                    <div class="metric-label">Incidents</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${bestRoute.safety_grade}</div>
+                    <div class="metric-label">Grade</div>
+                </div>
+            `;
+            document.getElementById('routeMetrics').innerHTML = metricsHtml;
+            
+            // Display route comparison table
+            const tableHtml = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Route Type</th>
+                            <th>Distance (m)</th>
+                            <th>Safety Score</th>
+                            <th>Incidents</th>
+                            <th>Grade</th>
+                            <th>Waypoints</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.route_comparison.map(route => `
+                            <tr class="${route.route_type === bestRoute.route_type ? 'table-primary' : ''}">
+                                <td>
+                                    <span class="route-type-badge route-type-${route.route_type}">${route.route_type.toUpperCase()}</span>
+                                    ${route.route_type === bestRoute.route_type ? ' <i class="fas fa-star text-warning"></i>' : ''}
+                                </td>
+                                <td>${Math.round(route.total_distance)}</td>
+                                <td>${route.avg_safety_score.toFixed(1)}</td>
+                                <td>${route.total_incidents}</td>
+                                <td><span class="safety-grade grade-${route.safety_grade.toLowerCase()}">${route.safety_grade}</span></td>
+                                <td>${route.waypoint_count}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('routeComparisonTable').innerHTML = tableHtml;
+            
+            // Display recommendations
+            if (data.recommendations) {
+                const recommendationsHtml = `
+                    <h4><i class="fas fa-lightbulb"></i> Safety Recommendations</h4>
+                    <ul>
+                        ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                `;
+                document.getElementById('recommendations').innerHTML = recommendationsHtml;
             }
             
-            // Update statistics
-            document.getElementById('total_distance').textContent = Math.round(summary.total_distance_meters);
-            document.getElementById('total_incidents').textContent = summary.total_incidents_along_route;
-            document.getElementById('avg_safety').textContent = summary.avg_safety_score.toFixed(1);
-            document.getElementById('min_safety').textContent = summary.min_safety_score.toFixed(1);
-            document.getElementById('max_safety').textContent = summary.max_safety_score.toFixed(1);
-            
-            // Update route segments
-            document.getElementById('high_safety_segments').textContent = summary.route_analysis.high_safety_segments;
-            document.getElementById('medium_safety_segments').textContent = summary.route_analysis.medium_safety_segments;
-            document.getElementById('low_safety_segments').textContent = summary.route_analysis.low_safety_segments;
-            
-            // Update recommendations
-            const recommendationsDiv = document.getElementById('recommendations');
-            recommendationsDiv.innerHTML = '';
-            data.recommendations.forEach(rec => {
-                const recDiv = document.createElement('div');
-                recDiv.className = 'recommendation';
-                recDiv.innerHTML = rec;
-                recommendationsDiv.appendChild(recDiv);
-            });
-            
-            // Store route data for map creation
-            window.currentRouteData = data.route;
-            
-            document.getElementById('results').style.display = 'block';
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('errorSection').style.display = 'none';
         }
-        
+
         function createMap() {
-            if (!window.currentRouteData) {
-                showError('No route data available. Please find a route first.');
-                return;
-            }
+            const startLat = parseFloat(document.getElementById('startLat').value);
+            const startLng = parseFloat(document.getElementById('startLng').value);
+            const endLat = parseFloat(document.getElementById('endLat').value);
+            const endLng = parseFloat(document.getElementById('endLng').value);
+            const safetyWeight = parseFloat(document.getElementById('safetyWeight').value) / 100;
             
             showLoading();
             
-            fetch('/create_map', {
+            fetch('/visualize_routes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    route: window.currentRouteData,
-                    start_name: 'Start',
-                    end_name: 'End'
+                    start_lat: startLat,
+                    start_lng: startLng,
+                    end_lat: endLat,
+                    end_lng: endLng,
+                    safety_weight: safetyWeight
                 })
             })
             .then(response => response.json())
             .then(data => {
                 hideLoading();
-                
                 if (data.success) {
-                    const mapFrame = document.getElementById('map_frame');
-                    mapFrame.src = data.map_url;
-                    document.getElementById('map_container').style.display = 'block';
-                    showSuccess('Interactive map created successfully!');
+                    document.getElementById('mapContainer').innerHTML = `
+                        <iframe src="${data.map_url}" title="Route Comparison Map"></iframe>
+                    `;
+                    document.getElementById('mapContainer').style.display = 'block';
                 } else {
                     showError(data.error || 'Failed to create map');
                 }
@@ -508,6 +588,24 @@
                 hideLoading();
                 showError('Network error: ' + error.message);
             });
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorSection').innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i> ${message}
+            `;
+            document.getElementById('errorSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
         }
     </script>
 </body>
