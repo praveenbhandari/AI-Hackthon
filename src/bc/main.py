@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import warnings
+import os
 
 from datetime import datetime
 
@@ -13,9 +14,12 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # Replace with inputs you want to test with, it will automatically
 # interpolate any tasks and agents information
 
+# Default SFO BART schedule file path
+DEFAULT_SCHEDULE_FILE = "./src/sfo_bart_schedule.csv"
+
 def run():
     """
-    Run the crew.
+    Run the research crew (default).
     """
     inputs = {
         'topic': 'AI LLMs',
@@ -23,6 +27,7 @@ def run():
     }
     
     try:
+        # Use research-only crew to avoid transit task variable conflicts
         Bc().crew().kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
@@ -30,7 +35,7 @@ def run():
 
 def train():
     """
-    Train the crew for a given number of iterations.
+    Train the research crew for a given number of iterations.
     """
     inputs = {
         "topic": "AI LLMs",
@@ -54,7 +59,7 @@ def replay():
 
 def test():
     """
-    Test the crew execution and returns the results.
+    Test the research crew execution and returns the results.
     """
     inputs = {
         "topic": "AI LLMs",
@@ -66,3 +71,41 @@ def test():
 
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
+
+def run_transit_crew():
+    """
+    Run the transit crew with proper inputs.
+    """
+    inputs = {
+        'topic': 'Bay Area Transit Planning',
+        'current_year': str(datetime.now().year),
+        'user_request': 'I want to go from Salesforce Transit Center to Richmond BART at 08:00 AM',
+        'schedule_file': DEFAULT_SCHEDULE_FILE if os.path.exists(DEFAULT_SCHEDULE_FILE) else '',
+        'origin': 'Salesforce Transit Center',
+        'destination': 'Richmond BART',
+        'time': '08:00'
+    }
+    
+    try:
+        Bc().transit_crew().kickoff(inputs=inputs)
+    except Exception as e:
+        raise Exception(f"An error occurred while running the transit crew: {e}")
+
+def run_full_crew():
+    """
+    Run the full crew with all tasks (requires all variables).
+    """
+    inputs = {
+        'topic': 'AI LLMs and Transit Planning',
+        'current_year': str(datetime.now().year),
+        'user_request': 'Analyze AI LLMs and provide insights about the current state of the technology',
+        'schedule_file': DEFAULT_SCHEDULE_FILE if os.path.exists(DEFAULT_SCHEDULE_FILE) else '',
+        'origin': 'AI Research',
+        'destination': 'Machine Learning',
+        'time': '09:00'
+    }
+    
+    try:
+        Bc().full_crew().kickoff(inputs=inputs)
+    except Exception as e:
+        raise Exception(f"An error occurred while running the full crew: {e}")

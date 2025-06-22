@@ -5,15 +5,24 @@ description = "BC using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    "crewai[tools]>=0.130.0,<1.0.0"
+    "crewai[tools]>=0.130.0,<1.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0"
 ]
 
 [project.scripts]
 bc = "bc.main:run"
 run_crew = "bc.main:run"
+run_research = "bc.main:run"
+run_transit = "bc.main:run_transit_crew"
+run_full = "bc.main:run_full_crew"
 train = "bc.main:train"
 replay = "bc.main:replay"
 test = "bc.main:test"
+transit = "bc.transit_main:main"
+api = "bc.api:app"
 
 [build-system]
 requires = ["hatchling"]

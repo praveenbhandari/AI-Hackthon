@@ -29,3 +29,76 @@ claude_analysis_task:
     - Risk assessment and opportunities
     Formatted as markdown with clear sections and bullet points
   agent: claude_agent
+
+transit_planning_task:
+  description: >
+    Analyze the user's transit request and find optimal public transportation routes using the SFO BART schedule data.
+    First, load the transit data from the provided schedule file. Then use the transit tools to:
+    1. Search for stops near the origin and destination
+    2. Find available routes between those stops
+    3. Consider factors like time, cost, convenience, and accessibility
+    4. Provide personalized recommendations with clear explanations
+    
+    The user request is: {user_request}
+    The schedule file is: {schedule_file}
+  expected_output: >
+    A comprehensive transit plan including:
+    - System overview and data summary
+    - Multiple route options ranked by preference
+    - Detailed timing and cost information
+    - Alternative routes and backup plans
+    - Accessibility considerations
+    - Tips for the journey
+    - Popular stops and route recommendations
+    Formatted as markdown with clear sections and emojis
+  agent: transit_planner
+
+transit_analysis_task:
+  description: >
+    Analyze the SFO BART transit system using the provided schedule data to provide comprehensive insights.
+    First, load the transit data and get system statistics. Then analyze:
+    1. Transit patterns and trends in the data
+    2. Route efficiency and coverage analysis
+    3. Popular stops and high-traffic areas
+    4. System optimization opportunities
+    5. User experience insights and recommendations
+    
+    The schedule file is: {schedule_file}
+  expected_output: >
+    A detailed transit analysis report including:
+    - System statistics and overview
+    - Pattern analysis and trends
+    - Efficiency insights and recommendations
+    - User experience improvements
+    - System optimization opportunities
+    - Data-driven insights and conclusions
+    - Popular routes and stops analysis
+    Formatted as markdown with charts, bullet points, and clear sections
+  agent: transit_analyst
+
+route_optimization_task:
+  description: >
+    Use advanced algorithms and Claude's reasoning to find the most efficient
+    and cost-effective transit routes from the SFO BART schedule data.
+    First, load the transit data and analyze the system. Then optimize routes considering:
+    1. Multiple optimization criteria (time, cost, transfers, accessibility)
+    2. User preferences and constraints
+    3. System-wide route efficiency
+    4. Cost-benefit analysis for different options
+    5. Personalized recommendations based on user profile
+    
+    Origin: {origin}
+    Destination: {destination}
+    Time: {time}
+    Schedule file: {schedule_file}
+  expected_output: >
+    An optimized route recommendation including:
+    - System overview and available options
+    - Best route options with detailed analysis
+    - Cost-benefit analysis for each option
+    - Time optimization strategies
+    - Accessibility considerations
+    - Personalized recommendations based on user profile
+    - Alternative routes and contingency plans
+    Formatted as markdown with clear rankings, explanations, and visual organization
+  agent: route_optimizer
