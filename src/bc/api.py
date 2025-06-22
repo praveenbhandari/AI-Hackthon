@@ -86,7 +86,7 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health ch eck endpoint"""
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
