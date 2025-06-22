@@ -1,0 +1,328 @@
+research_task:
+  description: >
+    Conduct a thorough research about {topic}
+    Make sure you find any interesting and relevant information given
+    the current year is {current_year}.
+  expected_output: >
+    A list with 10 bullet points of the most relevant information about {topic}
+  agent: researcher
+
+reporting_task:
+  description: >
+    Review the context you got and expand each topic into a full section for a report.
+    Make sure the report is detailed and contains any and all relevant information.
+  expected_output: >
+    A fully fledged report with the main topics, each with a full section of information.
+    Formatted as markdown without '```'
+  agent: reporting_analyst
+
+claude_analysis_task:
+  description: >
+    Using Claude's advanced reasoning capabilities, provide deep analysis and insights
+    about {topic}. Go beyond surface-level information to uncover patterns, implications,
+    and strategic recommendations. Consider multiple perspectives and potential future scenarios.
+  expected_output: >
+    A comprehensive analysis document containing:
+    - Deep insights and patterns identified
+    - Strategic implications and recommendations
+    - Future scenario analysis
+    - Risk assessment and opportunities
+    Formatted as markdown with clear sections and bullet points
+  agent: claude_agent
+
+transit_planning_task:
+  description: >
+    Analyze the user's transit request and find optimal public transportation routes using the SFO BART schedule data.
+    First, load the transit data from the provided schedule file. Then use the transit tools to:
+    1. Search for stops near the origin and destination
+    2. Find available routes between those stops
+    3. Consider factors like time, cost, convenience, and accessibility
+    4. Provide personalized recommendations with clear explanations
+    
+    IMPORTANT: You must return your response in JSON format with the following structure:
+    {{
+      "transit_routes": [
+        {{
+          "route_id": "BART_001",
+          "departure_time": "09:00",
+          "arrival_time": "09:45", 
+          "time_taken": "45 minutes",
+          "cost": "5.00",
+          "stops": [
+            {{
+              "stop_number": "SFO",
+              "stop_name": "SFO Airport Terminal 3-Lower Level",
+              "arrival_time": "09:00",
+              "departure_time": "09:00"
+            }},
+            {{
+              "stop_number": "DC",
+              "stop_name": "Daly City",
+              "arrival_time": "09:15",
+              "departure_time": "09:18"
+            }},
+            {{
+              "stop_number": "EMB",
+              "stop_name": "Embarcadero",
+              "arrival_time": "09:45",
+              "departure_time": "09:45"
+            }}
+          ],
+          "total_stops": 3,
+          "route_type": "BART"
+        }},
+        {{
+          "route_id": "BART_002",
+          "departure_time": "09:15",
+          "arrival_time": "10:00",
+          "time_taken": "45 minutes",
+          "cost": "5.00",
+          "stops": [...],
+          "total_stops": 4,
+          "route_type": "BART"
+        }}
+      ],
+      "summary": {{
+        "total_routes": 2,
+        "fastest_route": "BART_001",
+        "cheapest_route": "BART_001",
+        "recommendation": "Take BART_001 for fastest and cheapest journey"
+      }}
+    }}
+    
+    CRITICAL: Return MULTIPLE routes in the "transit_routes" array. Do NOT use alphabetic names like "Route 1", "Route 2". 
+    Use descriptive route IDs like "BART_001", "BART_002", etc. Each route should be a separate object in the array.
+    
+    The user request is: {user_request}
+    The schedule file is: {schedule_file}
+  expected_output: >
+    JSON format response with MULTIPLE transit routes in an array format. Each route should contain departure_time, arrival_time, 
+    stop_number, stop_name, time_taken, and cost data extracted from the CSV schedule file.
+    Do NOT use alphabetic route names - use descriptive route IDs and return as an array of route objects.
+  agent: transit_planner
+
+transit_analysis_task:
+  description: >
+    Analyze the SFO BART transit system using the provided schedule data to provide comprehensive insights.
+    First, load the transit data and get system statistics. Then analyze:
+    1. Transit patterns and trends in the data
+    2. Route efficiency and coverage analysis
+    3. Popular stops and high-traffic areas
+    4. System optimization opportunities
+    5. User experience insights and recommendations
+    
+    IMPORTANT: You must return your response in JSON format with the following structure:
+    {{
+      "system_overview": {{
+        "total_routes": "number",
+        "total_stops": "number",
+        "total_schedules": "number"
+      }},
+      "popular_routes": [
+        {{
+          "route_id": "string",
+          "departure_time": "HH:MM",
+          "arrival_time": "HH:MM",
+          "time_taken": "X minutes",
+          "cost": "X.XX",
+          "stop_count": "number",
+          "popularity_score": "number"
+        }}
+      ],
+      "popular_stops": [
+        {{
+          "stop_number": "string",
+          "stop_name": "string",
+          "arrival_frequency": "number",
+          "departure_frequency": "number"
+        }}
+      ],
+      "efficiency_analysis": {{
+        "fastest_routes": ["route_ids"],
+        "most_efficient_stops": ["stop_names"],
+        "optimization_recommendations": ["strings"]
+      }}
+    }}
+    
+    The schedule file is: {schedule_file}
+  expected_output: >
+    JSON format response with transit analysis data including departure_time, arrival_time,
+    stop_number, stop_name, time_taken, and cost from the CSV schedule file. Include
+    system statistics, popular routes, popular stops, and efficiency analysis.
+  agent: transit_analyst
+
+route_optimization_task:
+  description: >
+    Use advanced algorithms and Claude's reasoning to find the most efficient
+    and cost-effective transit routes from the SFO BART schedule data.
+    First, load the transit data and analyze the system. Then optimize routes considering:
+    1. Multiple optimization criteria (time, cost, transfers, accessibility)
+    2. User preferences and constraints
+    3. System-wide route efficiency
+    4. Cost-benefit analysis for different options
+    5. Personalized recommendations based on user profile
+    
+    IMPORTANT: You must return your response in JSON format with the following structure:
+    {{
+      "optimized_routes": [
+        {{
+          "route_id": "BART_FAST_001",
+          "optimization_type": "fastest",
+          "departure_time": "09:00",
+          "arrival_time": "09:45",
+          "time_taken": "45 minutes",
+          "cost": "5.00",
+          "efficiency_score": 95,
+          "stops": [
+            {{
+              "stop_number": "SFO",
+              "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+              "arrival_time": "09:00",
+              "departure_time": "09:00"
+            }},
+            {{
+              "stop_number": "EMB",
+              "stop_name": "Embarcadero",
+              "arrival_time": "09:45",
+              "departure_time": "09:45"
+            }}
+          ],
+          "total_stops": 2
+        }},
+        {{
+          "route_id": "BART_CHEAP_001",
+          "optimization_type": "cheapest",
+          "departure_time": "09:15",
+          "arrival_time": "10:00",
+          "time_taken": "45 minutes",
+          "cost": "4.50",
+          "efficiency_score": 88,
+          "stops": [...],
+          "total_stops": 3
+        }},
+        {{
+          "route_id": "BART_BAL_001",
+          "optimization_type": "balanced",
+          "departure_time": "09:30",
+          "arrival_time": "10:15",
+          "time_taken": "45 minutes",
+          "cost": "4.75",
+          "efficiency_score": 92,
+          "stops": [...],
+          "total_stops": 3
+        }}
+      ],
+      "optimization_summary": {{
+        "fastest_route": {{
+          "route_id": "BART_FAST_001",
+          "time_taken": "45 minutes",
+          "cost": "5.00"
+        }},
+        "cheapest_route": {{
+          "route_id": "BART_CHEAP_001",
+          "time_taken": "45 minutes",
+          "cost": "4.50"
+        }},
+        "recommended_route": {{
+          "route_id": "BART_BAL_001",
+          "reason": "Best balance of time, cost, and convenience"
+        }}
+      }}
+    }}
+    
+    CRITICAL: Return MULTIPLE optimized routes in the "optimized_routes" array. Include at least 3 different optimization types:
+    fastest, cheapest, and balanced. Do NOT use alphabetic names like "Route 1", "Route 2". 
+    Use descriptive route IDs like "BART_FAST_001", "BART_CHEAP_001", "BART_BAL_001", etc.
+    
+    Origin: {origin}
+    Destination: {destination}
+    Time: {time}
+    Schedule file: {schedule_file}
+  expected_output: >
+    JSON format response with MULTIPLE optimized transit routes in an array format. Each route should contain departure_time, arrival_time,
+    stop_number, stop_name, time_taken, and cost data extracted from the CSV schedule file.
+    Include at least 3 different optimization types (fastest, cheapest, balanced) and return as an array of route objects.
+    Do NOT use alphabetic route names - use descriptive route IDs.
+  agent: route_optimizer
+
+safety_routing_task:
+  description: >
+    Find the safest routes between locations using real-time incident data and safety analysis.
+    Analyze the police incident data from the CSV file to calculate safety scores for different neighborhoods
+    and recommend routes that minimize exposure to high-incident areas.
+    
+    IMPORTANT: You must return your response in JSON format with the following structure:
+    {{
+      "safe_routes": [
+        {{
+          "route_id": "SAFE_BART_001",
+          "route_type": "BART",
+          "departure_time": "09:00",
+          "arrival_time": "09:45",
+          "time_taken": "45 minutes",
+          "cost": "5.00",
+          "safety_score": 85.5,
+          "safety_grade": "A",
+          "total_incidents": 2,
+          "stops": [
+            {{
+              "stop_number": "POINT_1",
+              "stop_name": "Route Point 1",
+              "arrival_time": "09:00",
+              "departure_time": "09:00",
+              "safety_score": 90.0,
+              "incident_count": 0,
+              "coordinates": [37.7694, -122.4862]
+            }},
+            {{
+              "stop_number": "POINT_2",
+              "stop_name": "Route Point 2",
+              "arrival_time": "09:45",
+              "departure_time": "09:45",
+              "safety_score": 81.0,
+              "incident_count": 2,
+              "coordinates": [37.8087, -122.4098]
+            }}
+          ],
+          "total_stops": 2,
+          "route_points": [[37.7694, -122.4862], [37.8087, -122.4098]],
+          "waypoints": [[37.7694, -122.4862], [37.8087, -122.4098]]
+        }}
+      ],
+      "best_route": {{
+        "route_id": "SAFE_BART_001",
+        "safety_score": 85.5,
+        "safety_grade": "A",
+        "total_incidents": 2
+      }},
+      "safety_analysis": {{
+        "total_routes_found": 1,
+        "safest_route": "SAFE_BART_001",
+        "highest_safety_score": 85.5,
+        "safety_grade": "A",
+        "total_incidents_avoided": 2,
+        "recommendation": "Take SAFE_BART_001 for safest journey with safety grade A"
+      }},
+      "route_comparison": {{
+        "fastest_route": "SAFE_BART_001",
+        "safest_route": "SAFE_BART_001",
+        "route_types_available": ["BART"]
+      }},
+      "incident_data_summary": {{
+        "data_source": "Police_Department_Incident_Reports__2018_to_Present_20250621.csv",
+        "safety_calculation_method": "Grid-based incident density analysis",
+        "radius_analyzed": "500 meters around route"
+      }}
+    }}
+    
+    CRITICAL: Return MULTIPLE safe routes in the "safe_routes" array. Include safety metrics for each route:
+    safety_score (0-100), safety_grade (A-F), total_incidents, and incident_count for each stop.
+    Use real coordinates and safety data from the incident CSV file.
+    
+    User request: {user_request}
+    Incident data file: Police_Department_Incident_Reports__2018_to_Present_20250621.csv
+  expected_output: >
+    JSON format response with MULTIPLE safe routes in an array format. Each route should contain safety metrics
+    including safety_score, safety_grade, total_incidents, and detailed stop information with incident counts.
+    Use real incident data from the CSV file to calculate safety scores and grades.
+  agent: safety_router

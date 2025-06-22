@@ -1,0 +1,393 @@
+{
+  "transit_data_dictionary": {
+    "description": "Comprehensive dictionary of transit data structures and examples for BART system",
+    "version": "1.0.0",
+    "last_updated": "2024-12-19",
+    
+    "data_structures": {
+      "transit_route": {
+        "description": "Complete structure for a single transit route",
+        "fields": {
+          "route_id": {
+            "type": "string",
+            "description": "Unique identifier for the route",
+            "examples": ["BART_001", "BART_FAST_001", "BART_CHEAP_001"],
+            "required": true
+          },
+          "departure_time": {
+            "type": "string",
+            "description": "Route departure time in HH:MM format",
+            "examples": ["09:00", "14:30", "23:45"],
+            "required": true
+          },
+          "arrival_time": {
+            "type": "string", 
+            "description": "Route arrival time in HH:MM format",
+            "examples": ["09:45", "15:15", "00:30"],
+            "required": true
+          },
+          "time_taken": {
+            "type": "string",
+            "description": "Total journey time",
+            "examples": ["45 minutes", "1 hour 15 minutes", "2 hours 30 minutes"],
+            "required": true
+          },
+          "cost": {
+            "type": "string",
+            "description": "Total fare cost",
+            "examples": ["5.00", "12.50", "3.75"],
+            "required": true
+          },
+          "stops": {
+            "type": "array",
+            "description": "Array of stops along the route",
+            "required": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "stop_number": {
+                  "type": "string",
+                  "description": "Stop identifier",
+                  "examples": ["SFO", "DC", "EMB", "CIV"]
+                },
+                "stop_name": {
+                  "type": "string", 
+                  "description": "Full stop name",
+                  "examples": ["San Francisco Airport", "Daly City", "Embarcadero"]
+                },
+                "arrival_time": {
+                  "type": "string",
+                  "description": "Arrival time at this stop",
+                  "examples": ["09:00", "09:15", "09:45"]
+                },
+                "departure_time": {
+                  "type": "string",
+                  "description": "Departure time from this stop", 
+                  "examples": ["09:05", "09:18", "09:45"]
+                }
+              }
+            }
+          },
+          "total_stops": {
+            "type": "integer",
+            "description": "Number of stops on the route",
+            "examples": [2, 5, 8],
+            "required": true
+          },
+          "route_type": {
+            "type": "string",
+            "description": "Type of transit system",
+            "examples": ["BART", "Bus", "Train"],
+            "required": true
+          },
+          "optimization_type": {
+            "type": "string",
+            "description": "Type of optimization applied (for route optimizer)",
+            "examples": ["fastest", "cheapest", "balanced"],
+            "required": false
+          },
+          "efficiency_score": {
+            "type": "integer",
+            "description": "Efficiency score from 0-100 (for route optimizer)",
+            "examples": [85, 92, 78],
+            "required": false
+          }
+        }
+      },
+      
+      "transit_routes_response": {
+        "description": "Complete response structure for transit planning",
+        "fields": {
+          "transit_routes": {
+            "type": "array",
+            "description": "Array of transit route objects",
+            "required": true
+          },
+          "summary": {
+            "type": "object",
+            "description": "Summary of all routes",
+            "required": true,
+            "properties": {
+              "total_routes": {
+                "type": "integer",
+                "description": "Total number of routes found"
+              },
+              "fastest_route": {
+                "type": "string",
+                "description": "Route ID of fastest route"
+              },
+              "cheapest_route": {
+                "type": "string", 
+                "description": "Route ID of cheapest route"
+              },
+              "recommendation": {
+                "type": "string",
+                "description": "Human-readable recommendation"
+              }
+            }
+          }
+        }
+      },
+      
+      "optimization_response": {
+        "description": "Complete response structure for route optimization",
+        "fields": {
+          "optimized_routes": {
+            "type": "array",
+            "description": "Array of optimized route objects",
+            "required": true
+          },
+          "optimization_summary": {
+            "type": "object",
+            "description": "Summary of optimization results",
+            "required": true,
+            "properties": {
+              "fastest_route": {
+                "type": "object",
+                "properties": {
+                  "route_id": {"type": "string"},
+                  "time_taken": {"type": "string"},
+                  "cost": {"type": "string"}
+                }
+              },
+              "cheapest_route": {
+                "type": "object", 
+                "properties": {
+                  "route_id": {"type": "string"},
+                  "time_taken": {"type": "string"},
+                  "cost": {"type": "string"}
+                }
+              },
+              "recommended_route": {
+                "type": "object",
+                "properties": {
+                  "route_id": {"type": "string"},
+                  "reason": {"type": "string"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "example_responses": {
+      "transit_planning_example": {
+        "transit_routes": [
+          {
+            "route_id": "BART_001",
+            "departure_time": "09:00",
+            "arrival_time": "09:45",
+            "time_taken": "45 minutes",
+            "cost": "5.00",
+            "stops": [
+              {
+                "stop_number": "SFO",
+                "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+                "arrival_time": "09:00",
+                "departure_time": "09:00"
+              },
+              {
+                "stop_number": "DC",
+                "stop_name": "Daly City",
+                "arrival_time": "09:15",
+                "departure_time": "09:18"
+              },
+              {
+                "stop_number": "EMB",
+                "stop_name": "Embarcadero",
+                "arrival_time": "09:45",
+                "departure_time": "09:45"
+              }
+            ],
+            "total_stops": 3,
+            "route_type": "BART"
+          },
+          {
+            "route_id": "BART_002",
+            "departure_time": "09:15",
+            "arrival_time": "10:00",
+            "time_taken": "45 minutes",
+            "cost": "5.00",
+            "stops": [
+              {
+                "stop_number": "SFO",
+                "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+                "arrival_time": "09:15",
+                "departure_time": "09:15"
+              },
+              {
+                "stop_number": "CIV",
+                "stop_name": "Civic Center",
+                "arrival_time": "09:35",
+                "departure_time": "09:38"
+              },
+              {
+                "stop_number": "EMB",
+                "stop_name": "Embarcadero",
+                "arrival_time": "10:00",
+                "departure_time": "10:00"
+              }
+            ],
+            "total_stops": 3,
+            "route_type": "BART"
+          }
+        ],
+        "summary": {
+          "total_routes": 2,
+          "fastest_route": "BART_001",
+          "cheapest_route": "BART_001",
+          "recommendation": "Take BART_001 for fastest and cheapest journey"
+        }
+      },
+      
+      "route_optimization_example": {
+        "optimized_routes": [
+          {
+            "route_id": "BART_FAST_001",
+            "optimization_type": "fastest",
+            "departure_time": "09:00",
+            "arrival_time": "09:45",
+            "time_taken": "45 minutes",
+            "cost": "5.00",
+            "efficiency_score": 95,
+            "stops": [
+              {
+                "stop_number": "SFO",
+                "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+                "arrival_time": "09:00",
+                "departure_time": "09:00"
+              },
+              {
+                "stop_number": "EMB",
+                "stop_name": "Embarcadero",
+                "arrival_time": "09:45",
+                "departure_time": "09:45"
+              }
+            ],
+            "total_stops": 2
+          },
+          {
+            "route_id": "BART_CHEAP_001",
+            "optimization_type": "cheapest",
+            "departure_time": "09:15",
+            "arrival_time": "10:00",
+            "time_taken": "45 minutes",
+            "cost": "4.50",
+            "efficiency_score": 88,
+            "stops": [
+              {
+                "stop_number": "SFO",
+                "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+                "arrival_time": "09:15",
+                "departure_time": "09:15"
+              },
+              {
+                "stop_number": "CIV",
+                "stop_name": "Civic Center",
+                "arrival_time": "09:35",
+                "departure_time": "09:38"
+              },
+              {
+                "stop_number": "EMB",
+                "stop_name": "Embarcadero",
+                "arrival_time": "10:00",
+                "departure_time": "10:00"
+              }
+            ],
+            "total_stops": 3
+          },
+          {
+            "route_id": "BART_BAL_001",
+            "optimization_type": "balanced",
+            "departure_time": "09:30",
+            "arrival_time": "10:15",
+            "time_taken": "45 minutes",
+            "cost": "4.75",
+            "efficiency_score": 92,
+            "stops": [
+              {
+                "stop_number": "SFO",
+                "stop_name": "San Francisco Airport Terminal 3-Lower Level",
+                "arrival_time": "09:30",
+                "departure_time": "09:30"
+              },
+              {
+                "stop_number": "DC",
+                "stop_name": "Daly City",
+                "arrival_time": "09:45",
+                "departure_time": "09:48"
+              },
+              {
+                "stop_number": "EMB",
+                "stop_name": "Embarcadero",
+                "arrival_time": "10:15",
+                "departure_time": "10:15"
+              }
+            ],
+            "total_stops": 3
+          }
+        ],
+        "optimization_summary": {
+          "fastest_route": {
+            "route_id": "BART_FAST_001",
+            "time_taken": "45 minutes",
+            "cost": "5.00"
+          },
+          "cheapest_route": {
+            "route_id": "BART_CHEAP_001",
+            "time_taken": "45 minutes",
+            "cost": "4.50"
+          },
+          "recommended_route": {
+            "route_id": "BART_BAL_001",
+            "reason": "Best balance of time, cost, and convenience"
+          }
+        }
+      }
+    },
+    
+    "stop_codes": {
+      "SFO": "San Francisco Airport Terminal 3-Lower Level",
+      "DC": "Daly City",
+      "CIV": "Civic Center",
+      "EMB": "Embarcadero",
+      "POW": "Powell Street",
+      "MNT": "Montgomery Street",
+      "16TH": "16th Street Mission",
+      "24TH": "24th Street Mission",
+      "GLEN": "Glen Park",
+      "BALB": "Balboa Park"
+    },
+    
+    "route_types": {
+      "BART": "Bay Area Rapid Transit",
+      "Bus": "Local Bus Service",
+      "Train": "Commuter Train Service"
+    },
+    
+    "optimization_types": {
+      "fastest": "Optimized for shortest travel time",
+      "cheapest": "Optimized for lowest cost",
+      "balanced": "Optimized for best balance of time and cost"
+    },
+    
+    "api_endpoints": {
+      "transit_planner": {
+        "url": "/agents/transit_planner",
+        "method": "POST",
+        "description": "Find transit routes between two points"
+      },
+      "route_optimizer": {
+        "url": "/agents/route_optimizer", 
+        "method": "POST",
+        "description": "Find optimized routes with different criteria"
+      },
+      "safety_route": {
+        "url": "/safety/route",
+        "method": "POST", 
+        "description": "Find safe routes with safety scoring"
+      }
+    }
+  }
+} 
