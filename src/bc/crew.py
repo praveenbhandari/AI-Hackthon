@@ -14,18 +14,10 @@ from bc.tools.safety_routing_tools import (
     GetSafetyInfoTool,
     GetIncidentDataTool
 )
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-# Initialize Groq LLM following the official documentation
-groq_llm = LLM(
-    model="groq/llama-3.1-8b-instant",
-    temperature=0.5,
-    max_completion_tokens=1024,
-    top_p=0.9,
-    stream=False,
-)
+# Import Groq configuration and utilities
+from bc.groq_config import groq_llm, groq_fast, groq_balanced, groq_powerful
+from bc.groq_utils import get_agent_llm_config
 
 @CrewBase
 class Bc():
@@ -34,37 +26,38 @@ class Bc():
     agents: List[BaseAgent]
     tasks: List[Task]
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
     def researcher(self) -> Agent:
+        config = get_agent_llm_config('researcher')
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
+            config=self.agents_config['researcher'],
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def reporting_analyst(self) -> Agent:
+        config = get_agent_llm_config('reporting_analyst')
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
+            config=self.agents_config['reporting_analyst'],
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def claude_agent(self) -> Agent:
+        config = get_agent_llm_config('claude_agent')
         return Agent(
-            config=self.agents_config['claude_agent'], # type: ignore[index]
+            config=self.agents_config['claude_agent'],
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def transit_planner(self) -> Agent:
+        config = get_agent_llm_config('transit_planner')
         return Agent(
-            config=self.agents_config['transit_planner'], # type: ignore[index]
+            config=self.agents_config['transit_planner'],
             tools=[
                 LoadTransitDataTool(),
                 SearchStopsTool(),
@@ -72,14 +65,15 @@ class Bc():
                 GetRouteInfoTool(),
                 GetSystemStatsTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def transit_analyst(self) -> Agent:
+        config = get_agent_llm_config('transit_analyst')
         return Agent(
-            config=self.agents_config['transit_analyst'], # type: ignore[index]
+            config=self.agents_config['transit_analyst'],
             tools=[
                 LoadTransitDataTool(),
                 SearchStopsTool(),
@@ -87,14 +81,15 @@ class Bc():
                 GetRouteInfoTool(),
                 GetSystemStatsTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def route_optimizer(self) -> Agent:
+        config = get_agent_llm_config('route_optimizer')
         return Agent(
-            config=self.agents_config['route_optimizer'], # type: ignore[index]
+            config=self.agents_config['route_optimizer'],
             tools=[
                 LoadTransitDataTool(),
                 SearchStopsTool(),
@@ -102,20 +97,21 @@ class Bc():
                 GetRouteInfoTool(),
                 GetSystemStatsTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=config['llm'],
             verbose=True
         )
 
     @agent
     def safety_route_finder(self) -> Agent:
+        config = get_agent_llm_config('safety_route_finder')
         return Agent(
-            config=self.agents_config['safety_route_finder'], # type: ignore[index]
+            config=self.agents_config['safety_route_finder'],
             tools=[
                 FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm=groq_llm,
+            llm=config['llm'],
             verbose=False,
             max_iter=3,
             allow_delegation=False
@@ -123,14 +119,15 @@ class Bc():
 
     @agent
     def safety_analyst(self) -> Agent:
+        config = get_agent_llm_config('safety_analyst')
         return Agent(
-            config=self.agents_config['safety_analyst'], # type: ignore[index]
+            config=self.agents_config['safety_analyst'],
             tools=[
                 FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm=groq_llm,
+            llm=config['llm'],
             verbose=False,
             max_iter=3,
             allow_delegation=False
@@ -138,96 +135,90 @@ class Bc():
 
     @agent
     def route_planner(self) -> Agent:
+        config = get_agent_llm_config('route_planner')
         return Agent(
-            config=self.agents_config['route_planner'], # type: ignore[index]
+            config=self.agents_config['route_planner'],
             tools=[
                 FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm=groq_llm,
+            llm=config['llm'],
             verbose=False,
             max_iter=3,
             allow_delegation=False
         )
 
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
     def research_task(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+            config=self.tasks_config['research_task'],
         )
 
     @task
     def reporting_task(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
+            config=self.tasks_config['reporting_task'],
             output_file='report.md'
         )
 
     @task
     def claude_analysis_task(self) -> Task:
         return Task(
-            config=self.tasks_config['claude_analysis_task'], # type: ignore[index]
+            config=self.tasks_config['claude_analysis_task'],
             output_file='claude_analysis.md'
         )
 
     @task
     def transit_planning_task(self) -> Task:
         return Task(
-            config=self.tasks_config['transit_planning_task'], # type: ignore[index]
+            config=self.tasks_config['transit_planning_task'],
             output_file='transit_plan.md'
         )
 
     @task
     def transit_analysis_task(self) -> Task:
         return Task(
-            config=self.tasks_config['transit_analysis_task'], # type: ignore[index]
+            config=self.tasks_config['transit_analysis_task'],
             output_file='transit_analysis.md'
         )
 
     @task
     def route_optimization_task(self) -> Task:
         return Task(
-            config=self.tasks_config['route_optimization_task'], # type: ignore[index]
+            config=self.tasks_config['route_optimization_task'],
             output_file='route_optimization.md'
         )
 
     @task
     def safety_route_finding_task(self) -> Task:
         return Task(
-            config=self.tasks_config['safety_route_finding_task'], # type: ignore[index]
+            config=self.tasks_config['safety_route_finding_task'],
             output_file='safety_routes.json'
         )
 
     @task
     def safety_analysis_task(self) -> Task:
         return Task(
-            config=self.tasks_config['safety_analysis_task'], # type: ignore[index]
+            config=self.tasks_config['safety_analysis_task'],
             output_file='safety_analysis.json'
         )
 
     @task
     def route_planning_task(self) -> Task:
         return Task(
-            config=self.tasks_config['route_planning_task'], # type: ignore[index]
+            config=self.tasks_config['route_planning_task'],
             output_file='route_plan.json'
         )
 
     @crew
     def crew(self) -> Crew:
         """Creates the Bc crew with research tasks only (default)"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
-
         return Crew(
             agents=[self.researcher(), self.reporting_analyst(), self.claude_agent()],
             tasks=[self.research_task(), self.reporting_task(), self.claude_analysis_task()],
             process=Process.sequential,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
 
     def transit_crew(self) -> Crew:

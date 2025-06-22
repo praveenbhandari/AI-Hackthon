@@ -24,6 +24,12 @@ A comprehensive AI-powered system using CrewAI agents for research, transit plan
 - **Structured JSON Responses**: Consistent API responses for frontend integration
 - **Comprehensive Testing**: Full test suite for all endpoints
 
+### ⚡ Groq Integration
+- **Centralized Configuration**: Easy management of Groq LLM instances
+- **Model Selection**: Task-specific and agent-specific LLM optimization
+- **Performance Tuning**: Fast, balanced, and powerful model options
+- **Error Handling**: Comprehensive validation and status checking
+
 ## 📋 Quick Start
 
 ### 1. Install Dependencies
@@ -32,7 +38,23 @@ cd bc
 uv sync
 ```
 
-### 2. Start the API Server
+### 2. Set up Groq API Key
+```bash
+# Option 1: Environment variable
+export GROQ_API_KEY="your-groq-api-key-here"
+
+# Option 2: .env file
+echo "GROQ_API_KEY=your-groq-api-key-here" > .env
+```
+
+### 3. Test Groq Configuration
+```bash
+python test_groq_config.py
+python test_groq_utils.py
+python example_groq_usage.py
+```
+
+### 4. Start the API Server
 ```bash
 # Method 1: Using launcher script
 python run_api.py
@@ -44,7 +66,7 @@ python -m bc.api
 uvicorn bc.api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 3. Access the System
+### 5. Access the System
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 - **Interactive Transit**: `python -m bc.transit_main`
@@ -100,6 +122,8 @@ bc/
 │   ├── crew.py                   # CrewAI crew implementations
 │   ├── main.py                   # Command-line interface
 │   ├── transit_main.py           # Interactive transit system
+│   ├── groq_config.py            # Groq LLM configuration
+│   ├── groq_utils.py             # Groq utility functions
 │   ├── config/
 │   │   ├── agents.yaml           # Agent configurations
 │   │   └── tasks.yaml            # Task configurations
@@ -109,6 +133,10 @@ bc/
 │       └── custom_tool.py        # Custom tool template
 ├── run_api.py                    # API launcher script
 ├── test_api.py                   # Comprehensive test suite
+├── test_groq_config.py           # Groq configuration tests
+├── test_groq_utils.py            # Groq utilities tests
+├── example_groq_usage.py         # Groq usage examples
+├── GROQ_CONFIG_README.md         # Detailed Groq documentation
 ├── pyproject.toml                # Project configuration
 └── README.md                     # This file
 ```
@@ -235,3 +263,41 @@ uvicorn bc.api:app --host 0.0.0.0 --port 8000 --reload --log-level debug
 ## 📄 License
 
 This project is part of the BC CrewAI system and follows the same licensing terms.
+
+## ⚡ Groq Configuration
+
+The system includes a centralized Groq configuration system for optimal LLM selection:
+
+### Quick Usage
+```python
+from bc.groq_config import groq_fast, groq_balanced, groq_powerful
+from bc.groq_utils import get_agent_llm_config
+
+# Use pre-configured instances
+agent = Agent(llm=groq_fast, ...)
+
+# Get LLM for specific agent
+config = get_agent_llm_config('transit_planner')
+agent = Agent(llm=config['llm'], ...)
+```
+
+### Available Models
+- **Fast**: `llama-3.1-8b-instant` (~50ms response)
+- **Balanced**: `groq/llama3-8b-8192` (~200ms response)  
+- **Powerful**: `groq/llama3-70b-8192` (~500ms response)
+- **Advanced**: `mixtral-8x7b-32768` (complex reasoning)
+
+### Testing & Examples
+```bash
+# Test configuration
+python test_groq_config.py
+python test_groq_utils.py
+
+# Run examples
+python example_groq_usage.py
+
+# Check status
+python -c "from bc.groq_utils import print_groq_status; print_groq_status()"
+```
+
+📖 **For detailed documentation, see [GROQ_CONFIG_README.md](GROQ_CONFIG_README.md)**

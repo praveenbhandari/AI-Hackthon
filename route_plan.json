@@ -1,0 +1,278 @@
+Here is the comprehensive route plan that meets the stated criteria:
+
+{
+  "routes": [
+    {
+      "coordinates": [
+        {
+          "lat": 37.7694,
+          "lng": -122.4862
+        },
+        {
+          "lat": 37.76921,
+          "lng": -122.4722
+        },
+        {
+          "lat": 37.77392,
+          "lng": -122.4539
+        },
+        {
+          "lat": 37.77918,
+          "lng": -122.4344
+        },
+        {
+          "lat": 37.78392,
+          "lng": -122.4172
+        },
+        {
+          "lat": 37.8087,
+          "lng": -122.4098
+        }
+      ],
+      "distance": 6.4,
+      "duration": 22,
+      "safety_score": 82,
+      "safety_grade": "A",
+      "incident_count": 4
+    },
+    {
+      "coordinates": [
+        {
+          "lat": 37.7694,
+          "lng": -122.4862
+        },
+        {
+          "lat": 37.77189,
+          "lng": -122.4675
+        },
+        {
+          "lat": 37.77574,
+          "lng": -122.4471
+        },
+        {
+          "lat": 37.77841,
+          "lng": -122.4293
+        },
+        {
+          "lat": 37.8009,
+          "lng": -122.4153
+        },
+        {
+          "lat": 37.8087,
+          "lng": -122.4098
+        }
+      ],
+      "distance": 6.1,
+      "duration": 20,
+      "safety_score": 79,
+      "safety_grade": "B",
+      "incident_count": 5
+    },
+    {
+      "coordinates": [
+        {
+          "lat": 37.7694,
+          "lng": -122.4862
+        },
+        {
+          "lat": 37.76738,
+          "lng": -122.4749
+        },
+        {
+          "lat": 37.77257,
+          "lng": -122.4526
+        },
+        {
+          "lat": 37.77832,
+          "lng": -122.4285
+        },
+        {
+          "lat": 37.80048,
+          "lng": -122.4165
+        },
+        {
+          "lat": 37.8087,
+          "lng": -122.4098
+        }
+      ],
+      "distance": 6.3,
+      "duration": 21,
+      "safety_score": 76,
+      "safety_grade": "B",
+      "incident_count": 6
+    }
+  ],
+  "best_route": {
+    "coordinates": [
+      {
+        "lat": 37.7694,
+        "lng": -122.4862
+      },
+      {
+        "lat": 37.76921,
+        "lng": -122.4722
+      },
+      {
+        "lat": 37.77392,
+        "lng": -122.4539
+      },
+      {
+        "lat": 37.77918,
+        "lng": -122.4344
+      },
+      {
+        "lat": 37.78392,
+        "lng": -122.4172
+      },
+      {
+        "lat": 37.8087,
+        "lng": -122.4098
+      }
+    ],
+    "distance": 6.4,
+    "duration": 22,
+    "safety_score": 82,
+    "safety_grade": "A",
+    "incident_count": 4
+  },
+  "safety_analysis": {
+    "start_location": {
+      "coordinates": {
+        "lat": 37.7694,
+        "lng": -122.4862
+      },
+      "safety_score": 75,
+      "safety_grade": "B",
+      "nearby_incidents": 2
+    },
+    "end_location": {
+      "coordinates": {
+        "lat": 37.8087,
+        "lng": -122.4098
+      },
+      "safety_score": 70,
+      "safety_grade": "B",
+      "nearby_incidents": 2
+    },
+    "incident_hotspots": [
+      {
+        "coordinates": {
+          "lat": 37.76932516570732,
+          "lng": -122.45717202286605
+        },
+        "incident_count": 2
+      },
+      {
+        "coordinates": {
+          "lat": 37.744690568959065,
+          "lng": -122.4477960843277
+        },
+        "incident_count": 2
+      },
+      {
+        "coordinates": {
+          "lat": 37.74669284235958,
+          "lng": -122.4534891100683
+        },
+        "incident_count": 2
+      },
+      {
+        "coordinates": {
+          "lat": 37.77444173447522,
+          "lng": -122.39954469960556
+        },
+        "incident_count": 2
+      },
+      {
+        "coordinates": {
+          "lat": 37.744676129346374,
+          "lng": -122.4498641339165
+        },
+        "incident_count": 2
+      }
+    ],
+    "overall_safety_assessment": {
+      "safety_score": 72.5,
+      "safety_grade": "B",
+      "risk_level": "Moderate",
+      "risk_mitigation_strategies": [
+        "Increase police patrols in high-incident areas",
+        "Improve street lighting and visibility in dark areas",
+        "Encourage community engagement and neighborhood watch programs",
+        "Implement security cameras and surveillance systems in key locations"
+      ]
+    }
+  },
+  "route_safety_heatmap": {
+    "min_safety_score": 70,
+    "max_safety_score": 82,
+    "heatmap_data": [
+      {
+        "lat": 37.7694,
+        "lng": -122.4862,
+        "safety_score": 75
+      },
+      {
+        "lat": 37.76921,
+        "lng": -122.4722,
+        "safety_score": 77
+      },
+      {
+        "lat": 37.77392,
+        "lng": -122.4539,
+        "safety_score": 79
+      },
+      {
+        "lat": 37.77918,
+        "lng": -122.4344,
+        "safety_score": 80
+      },
+      {
+        "lat": 37.78392,
+        "lng": -122.4172,
+        "safety_score": 81
+      },
+      {
+        "lat": 37.8087,
+        "lng": -122.4098,
+        "safety_score": 70
+      }
+    ]
+  },
+  "route_safety_recommendations": {
+    "best_route": {
+      "coordinates": [
+        {
+          "lat": 37.7694,
+          "lng": -122.4862
+        },
+        {
+          "lat": 37.76921,
+          "lng": -122.4722
+        },
+        {
+          "lat": 37.77392,
+          "lng": -122.4539
+        },
+        {
+          "lat": 37.77918,
+          "lng": -122.4344
+        },
+        {
+          "lat": 37.78392,
+          "lng": -122.4172
+        },
+        {
+          "lat": 37.8087,
+          "lng": -122.4098
+        }
+      ],
+      "distance": 6.4,
+      "duration": 22,
+      "safety_score": 82,
+      "safety_grade": "A",
+      "incident_count": 4
+    },
+    "recommendation": "The best route is the one with the highest safety score of 82 and the lowest incident count of 4. This route provides the safest and most secure option for travel. However, the overall safety assessment indicates a moderate risk level, so additional safety measures and precautions should be taken, such as increased police presence, improved lighting, and community engagement programs."
+  }
+}
