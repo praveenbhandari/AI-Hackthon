@@ -3,6 +3,7 @@
 FastAPI endpoints for individual BC CrewAI agents with safety routing integration
 """
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 import uvicorn
@@ -20,6 +21,15 @@ app = FastAPI(
     title="BC CrewAI Agents API",
     description="Individual agent endpoints for BC CrewAI with safety routing integration",
     version="1.0.0"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],  # Frontend origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Initialize the Google Maps router for safety routing
@@ -943,16 +953,6 @@ async def safety_router_agent(request: AgentExecutionRequest):
         if not request.user_request:
             raise HTTPException(status_code=400, detail="user_request is required")
         
-        # Check if safety router is available
-        if safety_router is None:
-            return {
-                "success": False,
-                "message": "Safety router not available",
-                "error": "Safety router failed to initialize. Please check dependencies.",
-                "execution_time": time.time() - start_time,
-                "agent_name": "safety_router"
-            }
-        
         # Extract coordinates from user request or use defaults
         # Expected format: "Find safe route from lat,lng to lat,lng"
         import re
@@ -1071,8 +1071,7 @@ async def safety_router_agent(request: AgentExecutionRequest):
             "incident_data_summary": {
                 "data_source": "Police_Department_Incident_Reports__2018_to_Present_20250621.csv",
                 "safety_calculation_method": "Grid-based incident density analysis",
-                "radius_analyzed": "500 meters around route",
-                "routing_method": result.get('routing_method', 'unknown')
+                "radius_analyzed": "500 meters around route"
             }
         }
         

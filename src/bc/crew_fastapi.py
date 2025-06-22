@@ -3,6 +3,7 @@
 FastAPI endpoints for BC CrewAI crew operations with safety routing integration
 """
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 import uvicorn
@@ -21,6 +22,15 @@ app = FastAPI(
     title="BC CrewAI Crew API",
     description="Crew operations endpoints for BC CrewAI with safety routing integration",
     version="1.0.0"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000","*"],  # Frontend origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Initialize the Google Maps router for safety routing
