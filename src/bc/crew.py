@@ -12,8 +12,7 @@ from bc.tools.transport_tools import (
 from bc.tools.safety_routing_tools import (
     FindSafeRouteTool,
     GetSafetyInfoTool,
-    GetIncidentDataTool,
-    GroqSafetyRouteTool
+    GetIncidentDataTool
 )
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -112,11 +111,11 @@ class Bc():
         return Agent(
             config=self.agents_config['safety_route_finder'], # type: ignore[index]
             tools=[
-                GroqSafetyRouteTool(),
+                FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=groq_llm,
             verbose=False,
             max_iter=3,
             allow_delegation=False
@@ -127,11 +126,11 @@ class Bc():
         return Agent(
             config=self.agents_config['safety_analyst'], # type: ignore[index]
             tools=[
-                GroqSafetyRouteTool(),
+                FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=groq_llm,
             verbose=False,
             max_iter=3,
             allow_delegation=False
@@ -142,11 +141,11 @@ class Bc():
         return Agent(
             config=self.agents_config['route_planner'], # type: ignore[index]
             tools=[
-                GroqSafetyRouteTool(),
+                FindSafeRouteTool(),
                 GetSafetyInfoTool(),
                 GetIncidentDataTool()
             ],
-            llm="anthropic/claude-3-haiku-20240307",
+            llm=groq_llm,
             verbose=False,
             max_iter=3,
             allow_delegation=False
