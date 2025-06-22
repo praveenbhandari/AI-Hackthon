@@ -87,6 +87,8 @@ async function getWeather(location) {
     }
     
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&appid=${apiKey}&units=metric`;
+    console.log(`Weather API URL: ${url}`);
+    console.log(`Requesting weather data for location: ${location}`);
     
     https.get(url, (res) => {
       let data = '';
@@ -98,7 +100,15 @@ async function getWeather(location) {
       res.on('end', () => {
         if (res.statusCode === 200) {
           try {
+            console.log(`Raw weather API response: ${data}`);
             const weatherData = JSON.parse(data);
+            console.log(`Weather data for ${weatherData.name}, ${weatherData.sys.country}:`);
+            console.log(`- Temperature: ${weatherData.main.temp}°C (feels like ${weatherData.main.feels_like}°C)`);
+            console.log(`- Description: ${weatherData.weather[0].description}`);
+            console.log(`- Humidity: ${weatherData.main.humidity}%`);
+            console.log(`- Wind: ${weatherData.wind.speed} m/s`);
+            console.log(`- Coordinates: [${weatherData.coord.lat}, ${weatherData.coord.lon}]`);
+            
             resolve({
               city: weatherData.name,
               country: weatherData.sys.country,
@@ -110,13 +120,16 @@ async function getWeather(location) {
               icon: weatherData.weather[0].icon
             });
           } catch (error) {
+            console.error(`Error parsing weather data: ${error.message}`);
             reject(new Error(`Error parsing weather data: ${error.message}`));
           }
         } else {
+          console.error(`Weather API error: ${res.statusCode} - ${data}`);
           reject(new Error(`Weather API error: ${res.statusCode} - ${data}`));
         }
       });
     }).on('error', (error) => {
+      console.error(`Request error: ${error.message}`);
       reject(new Error(`Request error: ${error.message}`));
     });
   });
@@ -540,13 +553,21 @@ async function getWeatherRecommendationDirect(location) {
   }
 }
 
-// Handle command line arguments
-const location = process.argv[2] || 'San Francisco';
-getWeatherRecommendation(location)
-  .then(result => {
-    console.log('\nResults:');
-    console.log(JSON.stringify(result, null, 2));
-  })
-  .catch(error => {
-    console.error('Unhandled error:', error);
-  });
+// Export the function for use in other modules
+module.exports = {
+  getWeatherRecommendation
+};
+
+// Only run this if called directly from command line (not when imported)
+if (require.main === module) {
+  // Handle command line arguments
+  const location = process.argv[2] || 'San Francisco';
+  getWeatherRecommendation(location)
+    .then(result => {
+      console.log('\nResults:');
+      console.log(JSON.stringify(result, null, 2));
+    })
+    .catch(error => {
+      console.error('Unhandled error:', error);
+    });
+}
