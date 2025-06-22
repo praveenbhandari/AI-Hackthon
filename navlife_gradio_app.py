@@ -145,19 +145,27 @@ def format_restaurant_output(result: Dict[str, Any]) -> str:
         status_color = "green" if restaurant.get("isOpen", False) else "red"
         status_text = "Open" if restaurant.get("isOpen", False) else "Closed"
         
+        # Get photo URL if available
+        photo_url = restaurant.get('photos', ['https://via.placeholder.com/400x300?text=No+Image+Available'])[0]
+        
         html += f"""
         <div style='border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px;'>
             <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
                 <h4 style='margin: 0;'>{restaurant.get('name', '')}</h4>
                 <span style='color: {status_color};'>{status_text}</span>
             </div>
-            <div style='color: gold;'>{stars}</div>
-            <div style='display: flex; gap: 10px; color: #666;'>
-                <div>{price}</div>
-                <div>• {restaurant.get('distance', '')} miles</div>
-                {f"<div>• {', '.join(restaurant.get('dietary', []))}</div>" if restaurant.get('dietary', []) else ""}
+            <div style='display: flex; gap: 20px;'>
+                <img src="{photo_url}" alt="{restaurant.get('name', '')}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 4px;">
+                <div>
+                    <div style='color: gold;'>{stars}</div>
+                    <div style='display: flex; gap: 10px; color: #666;'>
+                        <div>{price}</div>
+                        <div>• {restaurant.get('distance', '')} miles</div>
+                        {f"<div>• {', '.join(restaurant.get('dietary', []))}</div>" if restaurant.get('dietary', []) else ""}
+                    </div>
+                    <div>{', '.join(restaurant.get('categories', []))}</div>
+                </div>
             </div>
-            <div>{', '.join(restaurant.get('categories', []))}</div>
         </div>
         """
     
