@@ -102,3 +102,70 @@ route_optimization_task:
     - Alternative routes and contingency plans
     Formatted as markdown with clear rankings, explanations, and visual organization
   agent: route_optimizer
+
+safety_route_finding_task:
+  description: >
+    Find safe routes between two locations using incident data and street network analysis.
+    Use the safety routing tools to:
+    1. Analyze the start and end coordinates
+    2. Find multiple route options with different safety weights
+    3. Calculate safety scores and incident counts for each route
+    4. Provide structured JSON response for frontend consumption
+    
+    Start Location: ({start_lat}, {start_lng})
+    End Location: ({end_lat}, {end_lng})
+    Safety Weight: {safety_weight}
+    Incident Data: Police_Department_Incident_Reports__2018_to_Present_20250621.csv
+  expected_output: >
+    A structured JSON response containing:
+    - Multiple route options with safety analysis
+    - Route coordinates, distances, and durations
+    - Safety scores and grades for each route
+    - Incident counts and safety metrics
+    - Best route recommendation
+    - Execution time and routing method
+    Formatted as valid JSON for frontend processing
+  agent: safety_route_finder
+
+safety_analysis_task:
+  description: >
+    Analyze safety patterns and provide insights about route security.
+    Use the safety analysis tools to:
+    1. Get safety information for specific locations
+    2. Analyze incident data patterns
+    3. Provide safety recommendations
+    4. Generate safety heatmap data
+    
+    Analysis Request: {safety_analysis_request}
+    Incident Data: Police_Department_Incident_Reports__2018_to_Present_20250621.csv
+  expected_output: >
+    A comprehensive safety analysis including:
+    - Safety scores and grades for locations
+    - Incident pattern analysis
+    - Safety recommendations
+    - Heatmap data for visualization
+    - Risk assessment and mitigation strategies
+    Formatted as structured JSON for frontend consumption
+  agent: safety_analyst
+
+route_planning_task:
+  description: >
+    Create comprehensive route plans with safety, efficiency, and user preferences.
+    Combine safety analysis with route planning to:
+    1. Generate multiple route options
+    2. Analyze safety and efficiency trade-offs
+    3. Provide personalized recommendations
+    4. Create structured output for frontend applications
+    
+    Planning Request: {route_planning_request}
+    User Preferences: {user_preferences}
+    Safety Requirements: {safety_requirements}
+  expected_output: >
+    A comprehensive route plan including:
+    - Multiple route options with detailed analysis
+    - Safety vs. efficiency trade-offs
+    - Personalized recommendations
+    - Alternative routes and backup plans
+    - Safety considerations and warnings
+    - Structured JSON format for frontend integration
+  agent: route_planner

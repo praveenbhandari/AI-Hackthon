@@ -9,7 +9,12 @@ dependencies = [
     "pandas>=2.0.0",
     "numpy>=1.24.0",
     "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0"
+    "uvicorn[standard]>=0.24.0",
+    "groq>=0.4.0",
+    "osmnx>=1.3.0",
+    "networkx>=3.0",
+    "shapely>=2.0.0",
+    "folium>=0.14.0"
 ]
 
 [project.scripts]
@@ -17,12 +22,14 @@ bc = "bc.main:run"
 run_crew = "bc.main:run"
 run_research = "bc.main:run"
 run_transit = "bc.main:run_transit_crew"
+run_safety = "bc.main:run_safety_crew"
 run_full = "bc.main:run_full_crew"
 train = "bc.main:train"
 replay = "bc.main:replay"
 test = "bc.main:test"
 transit = "bc.transit_main:main"
 api = "bc.api:app"
+run_api = "run_api:main"
 
 [build-system]
 requires = ["hatchling"]

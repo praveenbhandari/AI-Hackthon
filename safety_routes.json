@@ -1,0 +1,101 @@
+{
+  "success": true,
+  "routes": [
+    {
+      "route_type": "fast",
+      "distance_km": 7.2094930818501615,
+      "duration_minutes": 86.51391698220193,
+      "safety_score": 65.0,
+      "safety_grade": "C",
+      "incident_count": 4,
+      "coordinates": [
+        [
+          37.7694,
+          -122.4862
+        ],
+        [
+          37.8087,
+          -122.4098
+        ]
+      ],
+      "description": "Fastest route with more incidents"
+    },
+    {
+      "route_type": "direct",
+      "distance_km": 8.010547868722401,
+      "duration_minutes": 120.15821803083603,
+      "safety_score": 75.0,
+      "safety_grade": "B",
+      "incident_count": 2,
+      "coordinates": [
+        [
+          37.7694,
+          -122.4862
+        ],
+        [
+          37.8087,
+          -122.4098
+        ]
+      ],
+      "description": "Direct route between locations"
+    },
+    {
+      "route_type": "safe",
+      "distance_km": 10.413712229339122,
+      "duration_minutes": 156.20568344008683,
+      "safety_score": 85.0,
+      "safety_grade": "A",
+      "incident_count": 0,
+      "coordinates": [
+        [
+          37.7694,
+          -122.4862
+        ],
+        [
+          37.770399999999995,
+          -122.48519999999999
+        ],
+        [
+          37.807700000000004,
+          -122.41080000000001
+        ],
+        [
+          37.8087,
+          -122.4098
+        ]
+      ],
+      "description": "Safer route with fewer incidents"
+    }
+  ],
+  "best_route": {
+    "route_type": "fast",
+    "distance_km": 7.2094930818501615,
+    "duration_minutes": 86.51391698220193,
+    "safety_score": 65.0,
+    "safety_grade": "C",
+    "incident_count": 4,
+    "coordinates": [
+      [
+        37.7694,
+        -122.4862
+      ],
+      [
+        37.8087,
+        -122.4098
+      ]
+    ],
+    "description": "Fastest route with more incidents"
+  },
+  "total_routes": 3,
+  "execution_time": 8.320808410644531e-05,
+  "routing_method": "mock",
+  "start_location": {
+    "lat": 37.7694,
+    "lng": -122.4862
+  },
+  "end_location": {
+    "lat": 37.8087,
+    "lng": -122.4098
+  },
+  "safety_weight": 0.7
+}

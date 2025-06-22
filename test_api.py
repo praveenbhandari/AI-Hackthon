@@ -78,6 +78,165 @@ def test_transit_endpoint():
         print(f"❌ Transit endpoint failed: {e}")
         return False
 
+def test_safety_routes_endpoint():
+    """Test the safety routes endpoint"""
+    print("\n🛡️ Testing Safety Routes Endpoint...")
+    
+    payload = {
+        "start_lat": 37.7694,
+        "start_lng": -122.4862,
+        "end_lat": 37.8087,
+        "end_lng": -122.4098,
+        "safety_weight": 0.7,
+        "max_distance_factor": 2.0
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/safety_routes", json=payload)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"Success: {result['success']}")
+            print(f"Message: {result['message']}")
+            print(f"Total Routes: {result['total_routes']}")
+            print(f"Execution Time: {result['execution_time']:.2f} seconds")
+            print(f"Routing Method: {result['routing_method']}")
+            
+            if result.get('best_route'):
+                best_route = result['best_route']
+                print(f"Best Route Type: {best_route.get('route_type')}")
+                print(f"Best Route Safety Score: {best_route.get('avg_safety_score')}")
+                print(f"Best Route Safety Grade: {best_route.get('safety_grade')}")
+        else:
+            print(f"Error: {response.text}")
+            
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Safety routes endpoint failed: {e}")
+        return False
+
+def test_safety_info_endpoint():
+    """Test the safety info endpoint"""
+    print("\n🔍 Testing Safety Info Endpoint...")
+    
+    payload = {
+        "lat": 37.7694,
+        "lng": -122.4862,
+        "radius_meters": 500
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/safety_info", json=payload)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"Success: {result['success']}")
+            print(f"Message: {result['message']}")
+            print(f"Safety Score: {result['safety_score']}")
+            print(f"Safety Grade: {result['safety_grade']}")
+            print(f"Nearby Incidents: {result['nearby_incidents']}")
+            print(f"Execution Time: {result['execution_time']:.2f} seconds")
+        else:
+            print(f"Error: {response.text}")
+            
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Safety info endpoint failed: {e}")
+        return False
+
+def test_incident_data_endpoint():
+    """Test the incident data endpoint"""
+    print("\n📊 Testing Incident Data Endpoint...")
+    
+    payload = {
+        "limit": 1000
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/incident_data", json=payload)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"Success: {result['success']}")
+            print(f"Message: {result['message']}")
+            print(f"Total Incidents: {result['total_incidents']}")
+            print(f"Limit: {result['limit']}")
+            print(f"Execution Time: {result['execution_time']:.2f} seconds")
+        else:
+            print(f"Error: {response.text}")
+            
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Incident data endpoint failed: {e}")
+        return False
+
+def test_safety_analysis_endpoint():
+    """Test the safety analysis endpoint"""
+    print("\n📈 Testing Safety Analysis Endpoint...")
+    
+    payload = {
+        "safety_analysis_request": "Analyze safety patterns in San Francisco",
+        "topic": "Safety Analysis"
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/safety_analysis", json=payload)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"Success: {result['success']}")
+            print(f"Message: {result['message']}")
+            print(f"Execution Time: {result['execution_time']:.2f} seconds")
+            print(f"Result Preview: {result['result'][:200]}...")
+        else:
+            print(f"Error: {response.text}")
+            
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Safety analysis endpoint failed: {e}")
+        return False
+
+def test_route_planning_endpoint():
+    """Test the route planning endpoint"""
+    print("\n🗺️ Testing Route Planning Endpoint...")
+    
+    payload = {
+        "route_planning_request": "Find safe route from Golden Gate Park to Fisherman's Wharf",
+        "user_preferences": "Safety-focused, walking preferred, avoid high-crime areas",
+        "safety_requirements": "Avoid high-crime areas, well-lit routes, populated areas",
+        "start_lat": 37.7694,
+        "start_lng": -122.4862,
+        "end_lat": 37.8087,
+        "end_lng": -122.4098,
+        "safety_weight": 0.7
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/route_planning", json=payload)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"Success: {result['success']}")
+            print(f"Message: {result['message']}")
+            print(f"Execution Time: {result['execution_time']:.2f} seconds")
+            
+            if result.get('recommendations'):
+                print("Recommendations:")
+                for rec in result['recommendations']:
+                    print(f"  - {rec}")
+        else:
+            print(f"Error: {response.text}")
+            
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Route planning endpoint failed: {e}")
+        return False
+
 def test_full_crew_endpoint():
     """Test the full crew endpoint"""
     print("\n🚀 Testing Full Crew Endpoint...")
@@ -136,6 +295,20 @@ def test_tasks_info():
         print(f"❌ Tasks info failed: {e}")
         return False
 
+def test_tools_info():
+    """Test the tools info endpoint"""
+    print("\n🔧 Testing Tools Info Endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/tools")
+        print(f"Status: {response.status_code}")
+        if response.status_code == 200:
+            tools = response.json()['tools']
+            print(f"Available Tools: {list(tools.keys())}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Tools info failed: {e}")
+        return False
+
 def main():
     """Run all API tests"""
     print("🧪 BC CrewAI API Test Suite")
@@ -152,9 +325,15 @@ def main():
     tests = [
         test_research_endpoint,
         test_transit_endpoint,
+        test_safety_routes_endpoint,
+        test_safety_info_endpoint,
+        test_incident_data_endpoint,
+        test_safety_analysis_endpoint,
+        test_route_planning_endpoint,
         test_full_crew_endpoint,
         test_agents_info,
-        test_tasks_info
+        test_tasks_info,
+        test_tools_info
     ]
     
     results = []

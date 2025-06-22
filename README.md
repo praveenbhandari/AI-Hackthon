@@ -1,54 +1,237 @@
-# Bc Crew
+# BC CrewAI System
 
-Welcome to the Bc Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+A comprehensive AI-powered system using CrewAI agents for research, transit planning, and safety routing with Claude AI integration.
 
-## Installation
+## 🚀 Features
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+### 🔬 Research & Analysis
+- **AI LLMs Research**: Deep analysis of AI language models and trends
+- **Claude AI Integration**: Advanced reasoning and insights using Claude 3 Haiku
+- **Comprehensive Reporting**: Detailed research reports and analysis
 
-First, if you haven't already, install uv:
+### 🚌 Transit Planning
+- **Bay Area Transit**: Real-time route planning using BART and bus schedules
+- **Intelligent Routing**: AI-powered route optimization with multiple criteria
+- **Schedule Analysis**: Pattern recognition and system insights
 
+### 🛡️ Safety Routing
+- **Safety-Aware Routes**: Find safe paths using real incident data
+- **Street Network Analysis**: OSMnx integration for accurate routing
+- **Safety Scoring**: Location-based safety grades and incident analysis
+
+### 🌐 REST API
+- **FastAPI Integration**: Complete REST API for all functionality
+- **Structured JSON Responses**: Consistent API responses for frontend integration
+- **Comprehensive Testing**: Full test suite for all endpoints
+
+## 📋 Quick Start
+
+### 1. Install Dependencies
 ```bash
-pip install uv
+cd bc
+uv sync
 ```
 
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
+### 2. Start the API Server
 ```bash
-crewai install
-```
-### Customizing
+# Method 1: Using launcher script
+python run_api.py
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+# Method 2: Direct execution
+python -m bc.api
 
-- Modify `src/bc/config/agents.yaml` to define your agents
-- Modify `src/bc/config/tasks.yaml` to define your tasks
-- Modify `src/bc/crew.py` to add your own logic, tools and specific args
-- Modify `src/bc/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
-
-```bash
-$ crewai run
+# Method 3: Using uvicorn
+uvicorn bc.api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-This command initializes the BC Crew, assembling the agents and assigning them tasks as defined in your configuration.
+### 3. Access the System
+- **API Documentation**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
+- **Interactive Transit**: `python -m bc.transit_main`
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+## 🧪 Testing
 
-## Understanding Your Crew
+### Run All Tests
+```bash
+python test_api.py
+```
 
-The BC Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+### Test Individual Components
+```bash
+# Research crew
+python -m bc.main
 
-## Support
+# Transit crew
+python -m bc.main run_transit_crew
 
-For support, questions, or feedback regarding the Bc Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+# Safety crew
+python -m bc.main run_safety_crew
 
-Let's create wonders together with the power and simplicity of crewAI.
+# Full crew
+python -m bc.main run_full_crew
+```
+
+## 📡 API Endpoints
+
+### Core Endpoints
+- **POST** `/research` - AI LLMs research and analysis
+- **POST** `/transit` - Bay Area transit planning
+- **POST** `/full` - Combined research and transit analysis
+
+### Safety Routing Endpoints
+- **POST** `/safety_routes` - Find safe routes between locations
+- **POST** `/safety_info` - Get safety information for locations
+- **POST** `/incident_data` - Retrieve incident data for visualization
+- **POST** `/safety_analysis` - Analyze safety patterns
+- **POST** `/route_planning` - Comprehensive route planning
+
+### Information Endpoints
+- **GET** `/health` - API health status
+- **GET** `/agents` - Agent information
+- **GET** `/tasks` - Task information
+- **GET** `/tools` - Tool information
+
+## 📁 Project Structure
+
+```
+bc/
+├── src/bc/
+│   ├── api.py                    # Main FastAPI application
+│   ├── crew.py                   # CrewAI crew implementations
+│   ├── main.py                   # Command-line interface
+│   ├── transit_main.py           # Interactive transit system
+│   ├── config/
+│   │   ├── agents.yaml           # Agent configurations
+│   │   └── tasks.yaml            # Task configurations
+│   └── tools/
+│       ├── transport_tools.py    # Transit planning tools
+│       ├── safety_routing_tools.py # Safety routing tools
+│       └── custom_tool.py        # Custom tool template
+├── run_api.py                    # API launcher script
+├── test_api.py                   # Comprehensive test suite
+├── pyproject.toml                # Project configuration
+└── README.md                     # This file
+```
+
+## 🤖 Agents
+
+### Research Agents
+- **Researcher**: AI LLMs data research and trend analysis
+- **Reporting Analyst**: Report generation and data visualization
+- **Claude Agent**: Advanced reasoning and strategic insights
+
+### Transit Agents
+- **Transit Planner**: Route planning and schedule analysis
+- **Transit Analyst**: Pattern recognition and system insights
+- **Route Optimizer**: Multi-criteria route optimization
+
+### Safety Agents
+- **Safety Route Finder**: Safe route discovery using incident data
+- **Safety Analyst**: Safety pattern analysis and risk assessment
+- **Route Planner**: Comprehensive route planning with safety integration
+
+## 🛠️ Tools
+
+### Transit Tools
+- **Load Transit Data**: CSV schedule file processing
+- **Search Stops**: Location-based stop finding
+- **Find Routes**: Route discovery and optimization
+- **Get Route Info**: Detailed route information
+
+### Safety Tools
+- **Find Safe Route**: Safety-optimized routing with incident data
+- **Get Safety Info**: Location safety scoring and analysis
+- **Get Incident Data**: Incident data for heatmap visualization
+
+## 📊 Data Files
+
+- **SFO BART Schedule**: `src/sfo_bart_schedule.csv` (34,640+ lines)
+- **SFO Bus Schedule**: `src/sfo_bus_schedule.csv`
+- **Incident Data**: Police incident reports for safety analysis
+
+## 🔧 Configuration
+
+### Environment Setup
+- Python 3.10-3.13
+- CrewAI framework
+- FastAPI and Uvicorn
+- OSMnx for street network analysis
+- Pandas for data processing
+
+### Dependencies
+```toml
+crewai[tools]>=0.130.0
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+osmnx>=1.3.0
+networkx>=3.0
+shapely>=2.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+```
+
+## 🚀 Usage Examples
+
+### Research Analysis
+```bash
+curl -X POST "http://localhost:8000/research" \
+  -H "Content-Type: application/json" \
+  -d '{"topic": "AI LLMs", "current_year": "2024"}'
+```
+
+### Transit Planning
+```bash
+curl -X POST "http://localhost:8000/transit" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_request": "I want to go from Salesforce Transit Center to Richmond BART at 08:00 AM",
+    "origin": "Salesforce Transit Center",
+    "destination": "Richmond BART",
+    "time": "08:00"
+  }'
+```
+
+### Safety Routing
+```bash
+curl -X POST "http://localhost:8000/safety_routes" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_lat": 37.7694,
+    "start_lng": -122.4862,
+    "end_lat": 37.8087,
+    "end_lng": -122.4098,
+    "safety_weight": 0.7
+  }'
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **Module Import Errors**: Ensure you're in the correct directory (`cd bc`)
+2. **API Not Starting**: Check if port 8000 is available
+3. **Missing Dependencies**: Run `uv sync` to install packages
+4. **File Not Found**: Verify CSV files exist in `src/` directory
+
+### Debug Mode
+```bash
+uvicorn bc.api:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+```
+
+## 📈 Performance
+
+- **Research Analysis**: 30-60 seconds for comprehensive analysis
+- **Transit Planning**: 10-30 seconds for route optimization
+- **Safety Routing**: 2-5 seconds for route calculation
+- **API Response**: <1 second for simple endpoints
+
+## 🤝 Contributing
+
+1. Add new tools to appropriate `tools/` files
+2. Update agent configurations in `config/agents.yaml`
+3. Add task definitions in `config/tasks.yaml`
+4. Update crew implementations in `crew.py`
+5. Add tests to `test_api.py`
+
+## 📄 License
+
+This project is part of the BC CrewAI system and follows the same licensing terms.

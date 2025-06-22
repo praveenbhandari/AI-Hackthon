@@ -91,6 +91,29 @@ def run_transit_crew():
     except Exception as e:
         raise Exception(f"An error occurred while running the transit crew: {e}")
 
+def run_safety_crew():
+    """
+    Run the safety crew with proper inputs.
+    """
+    inputs = {
+        'topic': 'Safety Route Planning',
+        'current_year': str(datetime.now().year),
+        'start_lat': 37.7694,
+        'start_lng': -122.4862,
+        'end_lat': 37.8087,
+        'end_lng': -122.4098,
+        'safety_weight': 0.7,
+        'safety_analysis_request': 'Analyze safety patterns in San Francisco',
+        'route_planning_request': 'Find safe route from Golden Gate Park to Fisherman\'s Wharf',
+        'user_preferences': 'Safety-focused, walking preferred',
+        'safety_requirements': 'Avoid high-crime areas, well-lit routes'
+    }
+    
+    try:
+        Bc().safety_crew().kickoff(inputs=inputs)
+    except Exception as e:
+        raise Exception(f"An error occurred while running the safety crew: {e}")
+
 def run_full_crew():
     """
     Run the full crew with all tasks (requires all variables).
