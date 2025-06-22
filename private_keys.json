@@ -1,0 +1,10 @@
+{
+    "restaurant_agent": {
+        "identity_key": "ef44246f712f74185b5143dc5dac5b2f81f44bcf66e4658edc908ce104b83fc5",
+        "wallet_key": "n7ulaOMhboEQavn8F/JaX6eitXfqRghEEaa/Z3cmkuQ="
+    },
+    "client_agent": {
+        "identity_key": "f849255a86e0fab15411cba3ce87c82db13afa837bd1132959aedede3fb75adf",
+        "wallet_key": "areMwsmsXEvhfqJiC4vM9tqAMevWCsMzkqvnjgDk5fA="
+    }
+}
